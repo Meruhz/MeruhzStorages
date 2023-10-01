@@ -34,37 +34,21 @@ public final class MeruhzStorages {
         System.out.println("***********************************");
         System.out.println();
         System.out.println("Thank you for choosing MeruhzStorages!");
-        System.out.println("You are now using the latest version");
-
-        // public class LibraryWelcomeMessage {
-        //
-        //    public static void displayWelcomeMessage() {
-        //        System.out.println("********************************************");
-        //        System.out.println("*                                          *");
-        //        System.out.println("*      Welcome to (Library Name)           *");
-        //        System.out.println("*                                          *");
-        //        System.out.println("********************************************");
-        //        System.out.println();
-        //        System.out.println("Thank you for choosing (Library Name)!");
-        //        System.out.println("You are now using the latest version of our Java library.");
-        //        System.out.println("Developed by: Meruhz");
-        //        System.out.println();
-        //        System.out.println("Explore our library's features:");
-        //        System.out.println("- (Highlight key library feature 1)");
-        //        System.out.println("- (Highlight key library feature 2)");
-        //        System.out.println("- (Highlight key library feature 3)");
-        //        System.out.println();
-        //        System.out.println("Stay connected with the developer and community on GitHub:");
-        //        System.out.println("GitHub: [Link to the repository]");
-        //        System.out.println();
-        //        System.out.println("If you have any questions or feedback, please don't hesitate to reach out.");
-        //        System.out.println("We're here to ensure you have a great experience with (Library Name)!");
-        //    }
-        //
-        //    public static void main(String[] args) {
-        //        // This is where you would call the displayWelcomeMessage() method when your library is initialized.
-        //        displayWelcomeMessage();
-        //    }
-        //}
+        System.out.println("You are now using version: 1.0-SNAPSHOT");
+        System.out.println("Developer: Meruhz @meruhz");
+        System.out.println();
+        System.out.println("Explore our library features:");
+        System.out.println(" • Message storage creation;");
+        System.out.println(" • BaseComponent API integrated;");
+        System.out.println(" • Storages serialized as JSON;");
+        System.out.println(" • Custom API support;");
+        System.out.println(" • Fully API.");
+        System.out.println();
+        System.out.println("Stay connected with the developer and updates on GitHub:");
+        System.out.println("Developer Github: https://github.com/Meruhz/");
+        System.out.println("Library Github: https://github.com/Meruhz/MeruhzStorages/");
+        System.out.println();
+        System.out.println("If you have any questions, feedback or suggestions, please don't hesitate to reach out :)");
+        System.out.println("We're here to ensure you have a great experience with MeruhzStorages!");
     }
 }
