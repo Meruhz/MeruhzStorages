@@ -65,8 +65,8 @@ public class StorageApiProvider implements StorageApi {
             }
         }
 
-        storage.setConfiguration(new JsonConfiguration(target, name));
-        storage.getConfiguration().setConfiguration(MeruhzStorages.getInstance().getStorageApi().getSerializer().serialize(storage), true);
+        storage.setJson(new JsonConfiguration(target, name));
+        storage.getJson().setConfiguration(MeruhzStorages.getInstance().getStorageApi().getSerializer().serialize(storage), true);
 
         return storage;
     }
