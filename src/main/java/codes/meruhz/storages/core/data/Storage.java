@@ -1,7 +1,6 @@
 package codes.meruhz.storages.core.data;
 
 import codes.meruhz.storages.core.LocaleEnum;
-import codes.meruhz.storages.utils.configuration.JsonConfiguration;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,28 +12,32 @@ public interface Storage {
 
     @NotNull LocaleEnum getDefaultLocale();
 
-    @NotNull JsonConfiguration getConfiguration();
-
     @NotNull Set<@NotNull Message> getMessages();
 
     default @NotNull Message getMessage(@NotNull String id) {
         return this.getMessages().stream().filter(message -> message.getId().equals(id)).findFirst().orElseThrow(() -> new NullPointerException("Could not be found a message with id '" + id + "' at storage '" + this.getName() + "'"));
     }
 
-    default @NotNull LocalizedMessage getLocalizedMessage(@NotNull LocaleEnum locale, @NotNull String id) {
-        return this.getMessage(id).getLocalizedMessages().stream().filter(lc -> lc.getLocale().equals(locale)).findFirst().orElseThrow(() -> new NullPointerException("Could not be found locale '" + locale + "' for message '" + id + "' at storage '" + this.getName() + "'"));
+    default @NotNull Message getMessage(@NotNull LocaleEnum locale, @NotNull String id) {
+        @NotNull Message message = this.getMessage(id);
+
+        if(!message.getLocales().containsKey(locale)) {
+            throw new NullPointerException("Could not be found locale '" + locale + "' for message '" + id + "' at storage '" + this.getName() + "'");
+        }
+
+        return message;
     }
 
-    default @NotNull BaseComponent[] getText(@NotNull LocaleEnum locale, @NotNull String id) {
+    default @NotNull BaseComponent @NotNull [] getContent(@NotNull LocaleEnum locale, @NotNull String id, @NotNull Object... replaces) {
         try {
-            return this.getLocalizedMessage(locale, id).getContent();
+            return this.getMessage(locale, id).replace(locale, replaces);
 
         } catch (NullPointerException ignored) {
-            return this.getLocalizedMessage(this.getDefaultLocale(), id).getContent();
+            return this.getMessage(this.getDefaultLocale(), id).replace(locale, replaces);
         }
     }
 
-    default @NotNull String getLegacyText(@NotNull LocaleEnum locale, @NotNull String id) {
-        return BaseComponent.toLegacyText(this.getText(locale, id));
+    default @NotNull String getLegacyContent(@NotNull LocaleEnum locale, @NotNull String id, @NotNull Object... replaces) {
+        return BaseComponent.toLegacyText(this.getContent(locale, id, replaces));
     }
 }
