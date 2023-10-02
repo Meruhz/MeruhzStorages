@@ -1,20 +1,20 @@
 package codes.meruhz.storages.core.serializers.providers;
 
 import codes.meruhz.storages.core.LocaleEnum;
+import codes.meruhz.storages.core.data.LocalizedMessage;
 import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.core.data.providers.LocalizedMessageProvider;
 import codes.meruhz.storages.core.data.providers.MessageProvider;
 import codes.meruhz.storages.core.data.providers.StorageProvider;
 import codes.meruhz.storages.core.serializers.Serializer;
 import codes.meruhz.storages.utils.ComponentUtils;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @ApiStatus.Internal
@@ -27,29 +27,16 @@ public class StorageSerializerProvider implements Serializer<Storage> {
         json.addProperty("default locale", storage.getDefaultLocale().toString());
 
         @NotNull JsonObject messagesJson = new JsonObject();
+
         for(Message message : storage.getMessages()) {
             @NotNull JsonObject messageJson = new JsonObject();
             @NotNull JsonObject contentJson = new JsonObject();
-            @NotNull JsonObject replacementsJson = new JsonObject();
 
-            for(Map.Entry<LocaleEnum, BaseComponent[]> entrySet : message.getLocales().entrySet()) {
-                @NotNull String locale = entrySet.getKey().toString();
-
-                contentJson.addProperty(locale, ComponentUtils.serialize(entrySet.getValue()));
-
-                if(!message.getReplacements().isEmpty()) {
-                    @NotNull JsonArray replacementsArray = new JsonArray();
-
-                    for(Object replace : message.getReplacements()) {
-                        replacementsArray.add(replace.toString());
-                    }
-
-                    replacementsJson.add(locale, replacementsArray);
-                }
+            for(LocalizedMessage localizedMessage : message.getLocalizedMessages()) {
+                contentJson.addProperty(localizedMessage.getLocale().toString(), ComponentUtils.serialize(localizedMessage.getContent()));
             }
 
             messageJson.add("content", contentJson);
-            messageJson.add("replacements", replacementsJson);
             messagesJson.add(message.getId(), messageJson);
         }
 
@@ -71,22 +58,13 @@ public class StorageSerializerProvider implements Serializer<Storage> {
             @NotNull JsonObject contentJson = messageJson.getAsJsonObject("content");
 
             @NotNull Storage storage = new StorageProvider(name, defaultLocale);
+            @NotNull Message message = new MessageProvider(storage, messageId);
 
             for(Map.Entry<String, JsonElement> entrySet : contentJson.entrySet()) {
-                @NotNull Message message = new MessageProvider(messageId, new LinkedHashMap<>());
-
-                if(messageJson.has("replacements")) {
-                    @NotNull JsonObject replacementsJson = messageJson.getAsJsonObject("replacements");
-                    @NotNull JsonArray replacementsArray = replacementsJson.getAsJsonArray(entrySet.getKey());
-
-                    for(JsonElement replaceElement : replacementsArray) {
-                        message.replace(LocaleEnum.valueOf(entrySet.getKey()), replaceElement.getAsString());
-                    }
-                }
-
-                storage.getMessages().add(message);
+                new LocalizedMessageProvider(message, LocaleEnum.valueOf(entrySet.getKey()), ComponentSerializer.parse(entrySet.getValue().getAsString()));
             }
 
+            storage.getMessages().add(message);
             return storage;
 
         } catch (Throwable throwable) {

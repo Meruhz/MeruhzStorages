@@ -1,25 +1,30 @@
 package codes.meruhz.storages.core.data.providers;
 
-import codes.meruhz.storages.core.LocaleEnum;
+import codes.meruhz.storages.core.data.LocalizedMessage;
 import codes.meruhz.storages.core.data.Message;
-import net.md_5.bungee.api.chat.BaseComponent;
+import codes.meruhz.storages.core.data.Storage;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class MessageProvider implements Message {
 
-    private final @NotNull String id;
-    private final @NotNull List<@NotNull Object> replacements;
-    private final @NotNull Map<@NotNull LocaleEnum, @NotNull BaseComponent @NotNull []> locales;
+    private final @NotNull Set<@NotNull LocalizedMessage> localizedMessages = new LinkedHashSet<>();
 
-    public MessageProvider(@NotNull String id, @NotNull Map<@NotNull LocaleEnum, @NotNull BaseComponent @NotNull []> locales, @NotNull Object... replaces) {
+    private final @NotNull Storage storage;
+    private final @NotNull String id;
+
+    public MessageProvider(@NotNull Storage storage, @NotNull String id) {
+        this.storage = storage;
         this.id = id;
-        this.locales = locales;
-        this.replacements = new LinkedList<>(Arrays.asList(replaces));
+
+        this.getStorage().getMessages().add(this);
+    }
+
+    @Override
+    public @NotNull Storage getStorage() {
+        return this.storage;
     }
 
     @Override
@@ -28,13 +33,8 @@ public class MessageProvider implements Message {
     }
 
     @Override
-    public @NotNull List<@NotNull Object> getReplacements() {
-        return this.replacements;
-    }
-
-    @Override
-    public @NotNull Map<@NotNull LocaleEnum, @NotNull BaseComponent @NotNull []> getLocales() {
-        return this.locales;
+    public @NotNull Set<@NotNull LocalizedMessage> getLocalizedMessages() {
+        return this.localizedMessages;
     }
 
     @Override
@@ -44,11 +44,14 @@ public class MessageProvider implements Message {
 
         MessageProvider that = (MessageProvider) o;
 
+        if(!storage.equals(that.storage)) return false;
         return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        int result = storage.hashCode();
+        result = 31 * result + id.hashCode();
+        return result;
     }
 }

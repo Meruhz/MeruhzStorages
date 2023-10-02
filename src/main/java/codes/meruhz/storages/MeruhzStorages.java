@@ -1,6 +1,6 @@
 package codes.meruhz.storages;
 
-import codes.meruhz.storages.core.developers.StorageApi;
+import codes.meruhz.storages.core.developers.StorageApiCore;
 import codes.meruhz.storages.core.developers.providers.StorageApiProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,18 +8,18 @@ public final class MeruhzStorages {
 
     private static final @NotNull MeruhzStorages INSTANCE = new MeruhzStorages();
 
-    private @NotNull StorageApi storageApi;
+    private @NotNull StorageApiCore storageApiCore;
 
     public MeruhzStorages() {
-        this.storageApi = new StorageApiProvider();
+        this.storageApiCore = new StorageApiProvider.ApiCore();
     }
 
-    public @NotNull StorageApi getStorageApi() {
-        return this.storageApi;
+    public @NotNull StorageApiCore getCore() {
+        return this.storageApiCore;
     }
 
-    public void setStorageApi(@NotNull StorageApi storageApi) {
-        this.storageApi = storageApi;
+    public void setCore(@NotNull StorageApiCore storageApiCore) {
+        this.storageApiCore = storageApiCore;
     }
 
     public static @NotNull MeruhzStorages getInstance() {
@@ -27,6 +27,8 @@ public final class MeruhzStorages {
     }
 
     public static void main(String[] args) {
+        MeruhzStorages.getInstance().getCore().load();
+
         System.out.println("***********************************");
         System.out.println("*                                 *");
         System.out.println("*   Welcome to MeruhzStorages :)  *");

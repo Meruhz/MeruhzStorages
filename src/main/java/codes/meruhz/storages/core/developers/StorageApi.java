@@ -1,9 +1,10 @@
 package codes.meruhz.storages.core.developers;
 
 import codes.meruhz.storages.core.LocaleEnum;
+import codes.meruhz.storages.core.data.LocalizedMessage;
 import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
-import codes.meruhz.storages.core.serializers.Serializer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -17,7 +18,9 @@ public interface StorageApi {
         return this.getStorages().stream().filter(storage -> storage.getName().equals(name)).findFirst();
     }
 
-    @NotNull Serializer<Storage> getSerializer();
-
     @NotNull Storage createStorage(@NotNull String name, @NotNull LocaleEnum defaultLocale, @NotNull Message... messages);
+
+    @NotNull Message createMessage(@NotNull Storage storage, @NotNull String id);
+
+    @NotNull LocalizedMessage createLocalizedMessage(@NotNull Message message, @NotNull LocaleEnum locale, @NotNull BaseComponent @NotNull [] content);
 }
