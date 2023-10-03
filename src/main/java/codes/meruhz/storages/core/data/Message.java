@@ -1,12 +1,12 @@
 package codes.meruhz.storages.core.data;
 
-import codes.meruhz.storages.core.LocaleEnum;
 import codes.meruhz.storages.utils.ComponentUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
 import java.util.Set;
 
 public interface Message {
@@ -17,11 +17,11 @@ public interface Message {
 
     @NotNull Set<@NotNull LocalizedMessage> getLocalizedMessages();
 
-    default @NotNull LocalizedMessage getMessage(@NotNull LocaleEnum locale) {
+    default @NotNull LocalizedMessage getMessage(@NotNull Locale locale) {
         return this.getLocalizedMessages().stream().filter(lc -> lc.getLocale().equals(locale)).findFirst().orElseThrow(() -> new NullPointerException("Could not be found a message with id '" + this.getId() + "' and locale '" + locale + "' at storage '" + this.getStorage().getName()));
     }
 
-    default @NotNull BaseComponent @NotNull [] getText(@NotNull LocaleEnum locale) {
+    default @NotNull BaseComponent @NotNull [] getText(@NotNull Locale locale) {
         try {
             return this.getMessage(locale).getContent();
 
@@ -35,11 +35,11 @@ public interface Message {
         }
     }
 
-    default @NotNull String getLegacyText(@NotNull LocaleEnum locale) {
+    default @NotNull String getLegacyText(@NotNull Locale locale) {
         return TextComponent.toLegacyText(this.getText(locale));
     }
 
-    default @NotNull BaseComponent @NotNull [] replace(@NotNull LocaleEnum locale, @NotNull Object... replaces) {
+    default @NotNull BaseComponent @NotNull [] replace(@NotNull Locale locale, @NotNull Object... replaces) {
         @NotNull String text = ComponentUtils.serialize(this.getText(locale));
 
         for(Object replace : replaces) {

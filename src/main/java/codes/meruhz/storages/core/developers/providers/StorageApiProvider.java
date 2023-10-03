@@ -1,6 +1,6 @@
 package codes.meruhz.storages.core.developers.providers;
 
-import codes.meruhz.storages.core.LocaleEnum;
+import codes.meruhz.storages.core.Core;
 import codes.meruhz.storages.core.data.LocalizedMessage;
 import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
@@ -8,7 +8,6 @@ import codes.meruhz.storages.core.data.providers.LocalizedMessageProvider;
 import codes.meruhz.storages.core.data.providers.MessageProvider;
 import codes.meruhz.storages.core.data.providers.StorageProvider;
 import codes.meruhz.storages.core.developers.StorageApi;
-import codes.meruhz.storages.core.developers.StorageApiCore;
 import codes.meruhz.storages.core.serializers.Serializer;
 import codes.meruhz.storages.core.serializers.providers.StorageSerializerProvider;
 import codes.meruhz.storages.utils.configuration.JsonConfiguration;
@@ -23,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 public class StorageApiProvider implements StorageApi {
@@ -35,7 +35,7 @@ public class StorageApiProvider implements StorageApi {
     }
 
     @Override
-    public @NotNull Storage createStorage(@NotNull String name, @NotNull LocaleEnum defaultLocale, @NotNull Message... messages) {
+    public @NotNull Storage createStorage(@NotNull String name, @NotNull Locale defaultLocale, @NotNull Message... messages) {
         if(this.getStorage(name).isPresent()) {
             throw new IllegalArgumentException("An storage named '" + name + "' already exists");
         }
@@ -63,6 +63,7 @@ public class StorageApiProvider implements StorageApi {
         }
 
         storage.setJson(new JsonConfiguration(target, name));
+        this.getStorages().add(storage);
         return storage;
     }
 
@@ -76,7 +77,7 @@ public class StorageApiProvider implements StorageApi {
     }
 
     @Override
-    public @NotNull LocalizedMessage createLocalizedMessage(@NotNull Message message, @NotNull LocaleEnum locale, @NotNull BaseComponent @NotNull [] content) {
+    public @NotNull LocalizedMessage createLocalizedMessage(@NotNull Message message, @NotNull Locale locale, @NotNull BaseComponent @NotNull [] content) {
         message.getLocalizedMessages().stream().filter(lc -> lc.getMessage().equals(message) && lc.getLocale().equals(locale)).findFirst().ifPresent(lc -> {
             throw new NullPointerException("There already exists a localized message with id '" + message.getId() + "' and locale '" + locale + "' at storage '" + message.getStorage().getName() + "'");
         });
@@ -84,7 +85,7 @@ public class StorageApiProvider implements StorageApi {
         return new LocalizedMessageProvider(message, locale, content);
     }
 
-    public static class ApiCore implements StorageApiCore {
+    public static class ApiCore implements Core {
 
         private final @NotNull StorageApi storageApi;
         private final @NotNull Serializer<Storage> storageSerializer;

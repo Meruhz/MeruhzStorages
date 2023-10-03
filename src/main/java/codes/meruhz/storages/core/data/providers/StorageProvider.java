@@ -1,7 +1,6 @@
 package codes.meruhz.storages.core.data.providers;
 
 import codes.meruhz.storages.MeruhzStorages;
-import codes.meruhz.storages.core.LocaleEnum;
 import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
 import codes.meruhz.storages.utils.configuration.JsonConfiguration;
@@ -10,18 +9,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
 public class StorageProvider implements Storage {
 
     private final @NotNull String name;
-    private final @NotNull LocaleEnum defaultLocale;
+    private final @NotNull Locale defaultLocale;
     private final @NotNull Set<@NotNull Message> messages;
 
     private @Nullable JsonConfiguration json;
 
-    public StorageProvider(@NotNull String name, @NotNull LocaleEnum defaultLocale) {
+    public StorageProvider(@NotNull String name, @NotNull Locale defaultLocale) {
         this.name = name;
         this.defaultLocale = defaultLocale;
         this.messages = new LinkedHashSet<>();
@@ -41,7 +41,7 @@ public class StorageProvider implements Storage {
     }
 
     @Override
-    public @NotNull LocaleEnum getDefaultLocale() {
+    public @NotNull Locale getDefaultLocale() {
         return this.defaultLocale;
     }
 
@@ -51,7 +51,7 @@ public class StorageProvider implements Storage {
     }
 
     @Override
-    public @NotNull BaseComponent @NotNull [] getText(@NotNull LocaleEnum locale, @NotNull String id, @NotNull Object... replaces) {
+    public @NotNull BaseComponent @NotNull [] getText(@NotNull Locale locale, @NotNull String id, @NotNull Object... replaces) {
         @NotNull Optional<Message> optionalMessage = this.getMessages().stream().filter(message -> message.getId().equals(id)).findFirst();
 
         if(!optionalMessage.isPresent()) {

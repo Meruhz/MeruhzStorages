@@ -1,18 +1,19 @@
 package codes.meruhz.storages.core.data.providers;
 
-import codes.meruhz.storages.core.LocaleEnum;
 import codes.meruhz.storages.core.data.LocalizedMessage;
 import codes.meruhz.storages.core.data.Message;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public class LocalizedMessageProvider implements LocalizedMessage {
 
     private final @NotNull Message message;
-    private final @NotNull LocaleEnum locale;
+    private final @NotNull Locale locale;
     private final @NotNull BaseComponent @NotNull [] content;
 
-    public LocalizedMessageProvider(@NotNull Message message, @NotNull LocaleEnum locale, @NotNull BaseComponent @NotNull [] content) {
+    public LocalizedMessageProvider(@NotNull Message message, @NotNull Locale locale, @NotNull BaseComponent @NotNull [] content) {
         this.message = message;
         this.locale = locale;
         this.content = content;
@@ -25,7 +26,7 @@ public class LocalizedMessageProvider implements LocalizedMessage {
     }
 
     @Override
-    public @NotNull LocaleEnum getLocale() {
+    public @NotNull Locale getLocale() {
         return this.locale;
     }
 

@@ -1,14 +1,15 @@
 package codes.meruhz.storages.core.data;
 
-import codes.meruhz.storages.core.LocaleEnum;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
 
 public interface LocalizedMessage {
 
     @NotNull Message getMessage();
 
-    @NotNull LocaleEnum getLocale();
+    @NotNull Locale getLocale();
 
     @NotNull BaseComponent @NotNull [] getContent();
 }
