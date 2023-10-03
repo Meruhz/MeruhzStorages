@@ -52,19 +52,21 @@ public class StorageSerializerProvider implements Serializer<Storage> {
             @NotNull LocaleEnum defaultLocale = LocaleEnum.valueOf(json.get("default locale").getAsString());
 
             @NotNull JsonObject messagesJson = json.getAsJsonObject("messages");
-            @NotNull String messageId = messagesJson.entrySet().iterator().next().getKey();
-
-            @NotNull JsonObject messageJson = messagesJson.getAsJsonObject(messageId);
-            @NotNull JsonObject contentJson = messageJson.getAsJsonObject("content");
-
             @NotNull Storage storage = new StorageProvider(name, defaultLocale);
-            @NotNull Message message = new MessageProvider(storage, messageId);
 
-            for(Map.Entry<String, JsonElement> entrySet : contentJson.entrySet()) {
-                new LocalizedMessageProvider(message, LocaleEnum.valueOf(entrySet.getKey()), ComponentSerializer.parse(entrySet.getValue().getAsString()));
+            for(Map.Entry<String, JsonElement> messageEntry : messagesJson.entrySet()) {
+                @NotNull String messageId = messageEntry.getKey();
+                @NotNull JsonObject messageJson = messageEntry.getValue().getAsJsonObject();
+                @NotNull JsonObject contentJson = messageJson.getAsJsonObject("content");
+
+                @NotNull Message message = new MessageProvider(storage, messageId);
+                for(Map.Entry<String, JsonElement> entrySet : contentJson.entrySet()) {
+                    new LocalizedMessageProvider(message, LocaleEnum.valueOf(entrySet.getKey()), ComponentSerializer.parse(entrySet.getValue().getAsString()));
+                }
+
+                storage.getMessages().add(message);
             }
 
-            storage.getMessages().add(message);
             return storage;
 
         } catch (Throwable throwable) {
