@@ -1,16 +1,18 @@
 package codes.meruhz.storages.core.data.providers;
 
-import codes.meruhz.storages.core.data.LocalizedMessage;
 import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.utils.LocaleUtils;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class MessageProvider implements Message {
 
-    private final @NotNull Set<@NotNull LocalizedMessage> localizedMessages = new LinkedHashSet<>();
+    private final @NotNull Map<@NotNull Locale, @NotNull BaseComponent @NotNull []> contents = new LinkedHashMap<>();
 
     private final @NotNull Storage storage;
     private final @NotNull String id;
@@ -18,8 +20,10 @@ public class MessageProvider implements Message {
     public MessageProvider(@NotNull Storage storage, @NotNull String id) {
         this.storage = storage;
         this.id = id;
+    }
 
-        this.getStorage().getMessages().add(this);
+    public @NotNull Map<@NotNull Locale, @NotNull BaseComponent @NotNull []> getContents() {
+        return this.contents;
     }
 
     @Override
@@ -33,8 +37,29 @@ public class MessageProvider implements Message {
     }
 
     @Override
-    public @NotNull Set<@NotNull LocalizedMessage> getLocalizedMessages() {
-        return this.localizedMessages;
+    public @NotNull Locale[] getLocales() {
+        return this.getContents().keySet().toArray(new Locale[0]);
+    }
+
+    @Override
+    public @NotNull BaseComponent @NotNull [] getText(@NotNull Locale locale) {
+        try {
+            return this.getContents().get(locale);
+
+        } catch (NullPointerException ignored) {
+            try {
+                return this.getContents().get(this.getStorage().getDefaultLocale());
+
+            } catch (NullPointerException e) {
+                throw new RuntimeException("Could not find specified locale '" + LocaleUtils.toString(locale) + "' and the default locale '" + this.getStorage().getDefaultLocale() + "' for message '" + this.getId() + "'");
+            }
+        }
+    }
+
+    @Override
+    public void addContent(@NotNull Locale locale, @NotNull BaseComponent @NotNull [] content) {
+        this.getContents().put(locale, content);
+        this.getStorage().getMessages().add(this);
     }
 
     @Override

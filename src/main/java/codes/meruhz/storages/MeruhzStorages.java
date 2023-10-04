@@ -27,8 +27,6 @@ public final class MeruhzStorages {
     }
 
     public static void main(String[] args) {
-        MeruhzStorages.getInstance().getCore().load();
-
         System.out.println("***********************************");
         System.out.println("*                                 *");
         System.out.println("*   Welcome to MeruhzStorages :)  *");
@@ -52,5 +50,7 @@ public final class MeruhzStorages {
         System.out.println();
         System.out.println("If you have any questions, feedback or suggestions, please don't hesitate to reach out :)");
         System.out.println("We're here to ensure you have a great experience with MeruhzStorages!");
+
+        MeruhzStorages.getInstance().getCore().load();
     }
 }

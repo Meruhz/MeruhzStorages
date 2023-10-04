@@ -1,14 +1,15 @@
 package codes.meruhz.storages.core.serializers.providers;
 
 import codes.meruhz.storages.MeruhzStorages;
-import codes.meruhz.storages.core.data.LocalizedMessage;
 import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.core.data.providers.MessageProvider;
 import codes.meruhz.storages.core.serializers.Serializer;
 import codes.meruhz.storages.utils.ComponentUtils;
 import codes.meruhz.storages.utils.LocaleUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -27,11 +28,12 @@ public class StorageSerializerProvider implements Serializer<Storage> {
 
         @NotNull JsonObject messagesJson = new JsonObject();
         for(Message message : storage.getMessages()) {
+            @NotNull MessageProvider messageProvider = (MessageProvider) message;
             @NotNull JsonObject messageJson = new JsonObject();
             @NotNull JsonObject contentJson = new JsonObject();
 
-            for(LocalizedMessage localizedMessage : message.getLocalizedMessages()) {
-                contentJson.addProperty(LocaleUtils.toString(localizedMessage.getLocale()), ComponentUtils.serialize(localizedMessage.getContent()));
+            for(Map.Entry<Locale, BaseComponent[]> entrySet : messageProvider.getContents().entrySet()) {
+                contentJson.addProperty(LocaleUtils.toString(entrySet.getKey()), ComponentUtils.serialize(entrySet.getValue()));
             }
 
             messageJson.add("content", contentJson);
@@ -59,7 +61,7 @@ public class StorageSerializerProvider implements Serializer<Storage> {
 
                 @NotNull Message message = MeruhzStorages.getInstance().getCore().getApi().createMessage(storage, messageId);
                 for(Map.Entry<String, JsonElement> entrySet : contentJson.entrySet()) {
-                    MeruhzStorages.getInstance().getCore().getApi().createLocalizedMessage(message, LocaleUtils.toLocale(entrySet.getKey()), ComponentSerializer.parse(entrySet.getValue().getAsString()));
+                    message.addContent(LocaleUtils.toLocale(entrySet.getKey()), ComponentSerializer.parse(entrySet.getValue().getAsString()));
                 }
 
                 storage.getMessages().add(message);
@@ -68,7 +70,7 @@ public class StorageSerializerProvider implements Serializer<Storage> {
             return storage;
 
         } catch (Throwable throwable) {
-            throw new RuntimeException("An error occurred while deserialize storage json: " + element, throwable);
+            throw new RuntimeException("An error occurred while deserializing storage json: " + element, throwable);
         }
     }
 }

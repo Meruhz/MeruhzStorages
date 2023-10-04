@@ -1,17 +1,14 @@
 package codes.meruhz.storages.core.developers.providers;
 
 import codes.meruhz.storages.core.Core;
-import codes.meruhz.storages.core.data.LocalizedMessage;
 import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
-import codes.meruhz.storages.core.data.providers.LocalizedMessageProvider;
 import codes.meruhz.storages.core.data.providers.MessageProvider;
 import codes.meruhz.storages.core.data.providers.StorageProvider;
 import codes.meruhz.storages.core.developers.StorageApi;
 import codes.meruhz.storages.core.serializers.Serializer;
 import codes.meruhz.storages.core.serializers.providers.StorageSerializerProvider;
 import codes.meruhz.storages.utils.configuration.JsonConfiguration;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -20,7 +17,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -40,29 +36,15 @@ public class StorageApiProvider implements StorageApi {
             throw new IllegalArgumentException("An storage named '" + name + "' already exists");
         }
 
-        @NotNull StorageProvider storage = new StorageProvider(name, defaultLocale);
-        Arrays.stream(messages).forEach(message -> storage.getMessages().add(message));
-
         @NotNull File target = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages");
 
-        if(Files.isDirectory(target.toPath())) {
-
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(target.toPath())) {
-
-                for(Path file : stream) {
-                    @NotNull String fileName = file.getFileName().toString();
-
-                    if(fileName.equals(name + ".json")) {
-                        throw new IllegalArgumentException("An storage named '" + name + "' already exists on the folder '" + target.getAbsolutePath() + "'");
-                    }
-                }
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        if(Files.exists(target.toPath().resolve(name + ".json"))) {
+            throw new IllegalArgumentException("An storage named '" + name + "' already exists on the folder '" + target.getAbsolutePath() + "'");
         }
 
+        @NotNull StorageProvider storage = new StorageProvider(name, defaultLocale, messages);
         storage.setJson(new JsonConfiguration(target, name));
+
         this.getStorages().add(storage);
         return storage;
     }
@@ -74,15 +56,6 @@ public class StorageApiProvider implements StorageApi {
         });
 
         return new MessageProvider(storage, id);
-    }
-
-    @Override
-    public @NotNull LocalizedMessage createLocalizedMessage(@NotNull Message message, @NotNull Locale locale, @NotNull BaseComponent @NotNull [] content) {
-        message.getLocalizedMessages().stream().filter(lc -> lc.getMessage().equals(message) && lc.getLocale().equals(locale)).findFirst().ifPresent(lc -> {
-            throw new NullPointerException("There already exists a localized message with id '" + message.getId() + "' and locale '" + locale + "' at storage '" + message.getStorage().getName() + "'");
-        });
-
-        return new LocalizedMessageProvider(message, locale, content);
     }
 
     public static class ApiCore implements Core {
@@ -136,18 +109,14 @@ public class StorageApiProvider implements StorageApi {
             @NotNull File target = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages");
             if(Files.isDirectory(target.toPath())) {
 
-                try (DirectoryStream<Path> stream = Files.newDirectoryStream(target.toPath())) {
+                try (@NotNull DirectoryStream<Path> stream = Files.newDirectoryStream(target.toPath())) {
 
                     for(Path path : stream) {
-                        @NotNull File file = path.toFile();
-
-                        if(file.getName().endsWith(".json")) {
-                            this.getApi().getStorages().add(this.getSerializer().deserialize(JsonConfiguration.getFromFile(file)));
-                        }
+                        this.getApi().getStorages().add(this.getSerializer().deserialize(JsonConfiguration.getFromFile(path.toFile())));
                     }
 
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("An error occurred while reading storage files: " + e.getMessage(), e);
                 }
             }
         }
