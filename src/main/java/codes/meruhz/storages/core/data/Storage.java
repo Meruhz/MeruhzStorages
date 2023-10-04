@@ -21,5 +21,5 @@ public interface Storage {
         return TextComponent.toLegacyText(this.getText(locale, id, replaces));
     }
 
-    void load();
+    void save();
 }

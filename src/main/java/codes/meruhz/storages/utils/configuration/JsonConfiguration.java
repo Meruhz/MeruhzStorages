@@ -57,21 +57,8 @@ public class JsonConfiguration extends AbstractConfiguration {
 
         } else if(this.getFile().length() != 0) {
 
-            try (@NotNull FileInputStream fileInputStream = new FileInputStream(this.getFile())) {
-                @NotNull BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream, StandardCharsets.UTF_8));
-                @NotNull StringBuilder content = new StringBuilder();
-                @NotNull String line;
-
-                while ((line = bufferedReader.readLine()) != null) {
-                    content.append(line).append("\n");
-                }
-
-                this.setConfiguration(JsonParser.parseString(content.toString()), false);
-                this.save();
-
-            } catch (IOException e) {
-                throw new RuntimeException("An error occurred while loading Json configuration file: " + this.getName(), e);
-            }
+            this.setConfiguration(JsonConfiguration.getFromFile(this.getFile()), false);
+            this.save();
 
         } else {
             this.save();
@@ -91,6 +78,24 @@ public class JsonConfiguration extends AbstractConfiguration {
 
         } catch (IOException e) {
             throw new RuntimeException("An error occurred while reading resources file: " + file, e);
+        }
+    }
+
+    public static @NotNull JsonElement getFromFile(@NotNull File file) {
+        try (@NotNull FileInputStream fileInputStream = new FileInputStream(file)) {
+            @NotNull BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream, StandardCharsets.UTF_8));
+            @NotNull StringBuilder content = new StringBuilder();
+            @NotNull String line;
+
+            while((line = bufferedReader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+
+            bufferedReader.close();
+            return JsonParser.parseString(content.toString());
+
+        } catch (IOException e) {
+            throw new RuntimeException("An error occurred while loading Json configuration file: " + file.getName(), e);
         }
     }
 }

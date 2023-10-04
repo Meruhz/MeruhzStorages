@@ -11,7 +11,7 @@ public abstract class AbstractConfiguration {
 
     protected AbstractConfiguration(@NotNull File folder, @NotNull String name) {
         this.folder = folder;
-        this.name = name;
+        this.name = name.replace(" ", "_");
         this.getFolder().mkdirs();
         this.file = new File(folder, name);
     }

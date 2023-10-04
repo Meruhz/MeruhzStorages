@@ -121,7 +121,7 @@ public class StorageApiProvider implements StorageApi {
             }
 
             for(Storage storage : this.getApi().getStorages()) {
-                this.getSerializer().serialize(storage);
+                storage.save();
             }
 
             this.getApi().getStorages().clear();
@@ -131,6 +131,24 @@ public class StorageApiProvider implements StorageApi {
         public void load() {
             if(this.isLoaded()) {
                 throw new IllegalStateException("MeruhzStorages core already is loaded");
+            }
+
+            @NotNull File target = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages");
+            if(Files.isDirectory(target.toPath())) {
+
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(target.toPath())) {
+
+                    for(Path path : stream) {
+                        @NotNull File file = path.toFile();
+
+                        if(file.getName().endsWith(".json")) {
+                            this.getApi().getStorages().add(this.getSerializer().deserialize(JsonConfiguration.getFromFile(file)));
+                        }
+                    }
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }

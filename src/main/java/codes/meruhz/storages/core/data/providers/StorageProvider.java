@@ -62,7 +62,7 @@ public class StorageProvider implements Storage {
     }
 
     @Override
-    public void load() {
+    public void save() {
         this.getJson().setConfiguration(MeruhzStorages.getInstance().getCore().getSerializer().serialize(this), true);
     }
 
