@@ -1,7 +1,7 @@
-package codes.meruhz.storages.core.developers;
+package codes.meruhz.storages.developers;
 
-import codes.meruhz.storages.core.data.Message;
-import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.data.Message;
+import codes.meruhz.storages.data.Storage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;

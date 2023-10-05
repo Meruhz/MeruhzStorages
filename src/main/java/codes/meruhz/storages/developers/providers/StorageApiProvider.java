@@ -1,13 +1,12 @@
-package codes.meruhz.storages.core.developers.providers;
+package codes.meruhz.storages.developers.providers;
 
-import codes.meruhz.storages.core.Core;
-import codes.meruhz.storages.core.data.Message;
-import codes.meruhz.storages.core.data.Storage;
-import codes.meruhz.storages.core.data.providers.MessageProvider;
-import codes.meruhz.storages.core.data.providers.StorageProvider;
-import codes.meruhz.storages.core.developers.StorageApi;
-import codes.meruhz.storages.core.serializers.Serializer;
-import codes.meruhz.storages.core.serializers.providers.StorageSerializerProvider;
+import codes.meruhz.storages.data.Message;
+import codes.meruhz.storages.data.Storage;
+import codes.meruhz.storages.data.providers.MessageProvider;
+import codes.meruhz.storages.data.providers.StorageProvider;
+import codes.meruhz.storages.developers.StorageApi;
+import codes.meruhz.storages.serializers.Serializer;
+import codes.meruhz.storages.serializers.providers.StorageSerializerProvider;
 import codes.meruhz.storages.utils.configuration.JsonConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,36 +57,32 @@ public class StorageApiProvider implements StorageApi {
         return new MessageProvider(storage, id);
     }
 
-    public static class ApiCore implements Core {
+    public static class StorageLoader {
 
         private final @NotNull StorageApi storageApi;
         private final @NotNull Serializer<Storage> storageSerializer;
 
-        public ApiCore() {
+        public StorageLoader() {
             this(new StorageApiProvider(), new StorageSerializerProvider());
         }
 
-        public ApiCore(@NotNull StorageApi storageApi, @NotNull Serializer<Storage> storageSerializer) {
+        public StorageLoader(@NotNull StorageApi storageApi, @NotNull Serializer<Storage> storageSerializer) {
             this.storageApi = storageApi;
             this.storageSerializer = storageSerializer;
         }
 
-        @Override
         public @NotNull Serializer<Storage> getSerializer() {
             return this.storageSerializer;
         }
 
-        @Override
         public @NotNull StorageApi getApi() {
             return this.storageApi;
         }
 
-        @Override
         public boolean isLoaded() {
             return !this.getApi().getStorages().isEmpty();
         }
 
-        @Override
         public void unload() {
             if(!this.isLoaded()) {
                 throw new IllegalStateException("MeruhzStorages core is not loaded");
@@ -100,7 +95,6 @@ public class StorageApiProvider implements StorageApi {
             this.getApi().getStorages().clear();
         }
 
-        @Override
         public void load() {
             if(this.isLoaded()) {
                 throw new IllegalStateException("MeruhzStorages core already is loaded");

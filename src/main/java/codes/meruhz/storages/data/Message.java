@@ -1,4 +1,4 @@
-package codes.meruhz.storages.core.data;
+package codes.meruhz.storages.data;
 
 import codes.meruhz.storages.utils.ComponentUtils;
 import net.md_5.bungee.api.chat.BaseComponent;

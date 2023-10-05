@@ -1,7 +1,7 @@
-package codes.meruhz.storages.core.data.providers;
+package codes.meruhz.storages.data.providers;
 
-import codes.meruhz.storages.core.data.Message;
-import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.data.Message;
+import codes.meruhz.storages.data.Storage;
 import codes.meruhz.storages.utils.LocaleUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;

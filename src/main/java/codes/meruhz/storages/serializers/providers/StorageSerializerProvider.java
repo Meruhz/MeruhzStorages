@@ -1,10 +1,10 @@
-package codes.meruhz.storages.core.serializers.providers;
+package codes.meruhz.storages.serializers.providers;
 
 import codes.meruhz.storages.MeruhzStorages;
-import codes.meruhz.storages.core.data.Message;
-import codes.meruhz.storages.core.data.Storage;
-import codes.meruhz.storages.core.data.providers.MessageProvider;
-import codes.meruhz.storages.core.serializers.Serializer;
+import codes.meruhz.storages.data.Message;
+import codes.meruhz.storages.data.Storage;
+import codes.meruhz.storages.data.providers.MessageProvider;
+import codes.meruhz.storages.serializers.Serializer;
 import codes.meruhz.storages.utils.ComponentUtils;
 import codes.meruhz.storages.utils.LocaleUtils;
 import com.google.gson.JsonElement;
@@ -52,14 +52,14 @@ public class StorageSerializerProvider implements Serializer<Storage> {
             @NotNull Locale defaultLocale = LocaleUtils.toLocale(json.get("default locale").getAsString());
 
             @NotNull JsonObject messagesJson = json.getAsJsonObject("messages");
-            @NotNull Storage storage = MeruhzStorages.getInstance().getCore().getApi().createStorage(name, defaultLocale);
+            @NotNull Storage storage = MeruhzStorages.storages().getStorageLoader().getApi().createStorage(name, defaultLocale);
 
             for(Map.Entry<String, JsonElement> messageEntry : messagesJson.entrySet()) {
                 @NotNull String messageId = messageEntry.getKey();
                 @NotNull JsonObject messageJson = messageEntry.getValue().getAsJsonObject();
                 @NotNull JsonObject contentJson = messageJson.getAsJsonObject("content");
 
-                @NotNull Message message = MeruhzStorages.getInstance().getCore().getApi().createMessage(storage, messageId);
+                @NotNull Message message = MeruhzStorages.storages().getStorageLoader().getApi().createMessage(storage, messageId);
                 for(Map.Entry<String, JsonElement> entrySet : contentJson.entrySet()) {
                     message.addContent(LocaleUtils.toLocale(entrySet.getKey()), ComponentSerializer.parse(entrySet.getValue().getAsString()));
                 }

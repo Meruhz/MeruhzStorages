@@ -1,28 +1,27 @@
 package codes.meruhz.storages;
 
-import codes.meruhz.storages.core.Core;
-import codes.meruhz.storages.core.developers.providers.StorageApiProvider;
+import codes.meruhz.storages.developers.providers.StorageApiProvider;
 import org.jetbrains.annotations.NotNull;
 
 public final class MeruhzStorages {
 
     private static final @NotNull MeruhzStorages INSTANCE = new MeruhzStorages();
 
-    private @NotNull Core core;
+    private @NotNull StorageApiProvider.StorageLoader core;
 
     public MeruhzStorages() {
-        this.core = new StorageApiProvider.ApiCore();
+        this.core = new StorageApiProvider.StorageLoader();
     }
 
-    public @NotNull Core getCore() {
+    public @NotNull StorageApiProvider.StorageLoader getStorageLoader() {
         return this.core;
     }
 
-    public void setCore(@NotNull Core core) {
+    public void setStorageLoader(@NotNull StorageApiProvider.StorageLoader core) {
         this.core = core;
     }
 
-    public static @NotNull MeruhzStorages getInstance() {
+    public static @NotNull MeruhzStorages storages() {
         return MeruhzStorages.INSTANCE;
     }
 
@@ -51,6 +50,6 @@ public final class MeruhzStorages {
         System.out.println("If you have any questions, feedback or suggestions, please don't hesitate to reach out :)");
         System.out.println("We're here to ensure you have a great experience with MeruhzStorages!");
 
-        MeruhzStorages.getInstance().getCore().load();
+        MeruhzStorages.storages().getStorageLoader().load();
     }
 }

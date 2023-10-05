@@ -1,8 +1,8 @@
-package codes.meruhz.storages.core.data.providers;
+package codes.meruhz.storages.data.providers;
 
 import codes.meruhz.storages.MeruhzStorages;
-import codes.meruhz.storages.core.data.Message;
-import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.data.Message;
+import codes.meruhz.storages.data.Storage;
 import codes.meruhz.storages.utils.LocaleUtils;
 import codes.meruhz.storages.utils.configuration.JsonConfiguration;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -67,7 +67,7 @@ public class StorageProvider implements Storage {
 
     @Override
     public void save() {
-        this.getJson().setConfiguration(MeruhzStorages.getInstance().getCore().getSerializer().serialize(this), true);
+        this.getJson().setConfiguration(MeruhzStorages.storages().getStorageLoader().getSerializer().serialize(this), true);
     }
 
     @Override
