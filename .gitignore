@@ -39,3 +39,5 @@ build/
 /.idea/
 /src/test/
 /src/main/resources/storage_model.json
+/Legacy/src/test/
+/BaseComponent/src/test/

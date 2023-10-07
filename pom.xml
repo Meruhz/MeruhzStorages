@@ -4,9 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>codes.meruhz</groupId>
-    <artifactId>MeruhzStorages</artifactId>
+    <groupId>com.storages</groupId>
+    <artifactId>main</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -14,73 +15,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <build>
-        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-        <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
-
-        <resources>
-            <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
-
-                <includes>
-                    <include>**/*.json</include>
-                </includes>
-
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
-        <testResources>
-
-            <testResource>
-                <directory>${project.basedir}/src/test/resources</directory>
-            </testResource>
-
-        </testResources>
-
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
-                <configuration>
-                    <skipTests>false</skipTests>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
-
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-
-                        <configuration>
-
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>codes.meruhz.storages.MeruhzStorages</mainClass>
-                                </transformer>
-                            </transformers>
-
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <finalName>${project.artifactId}</finalName>
-                            <outputDirectory>.</outputDirectory>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <modules>
+        <module>core</module>
+        <module>md5-chat</module>
+        <module>legacy</module>
+    </modules>
 
     <dependencies>
+        <!-- Junit API -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -88,11 +30,11 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- BaseComponent API -->
+        <!-- Annotations API -->
         <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-chat</artifactId>
-            <version>1.16-R0.4</version>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.1</version>
             <scope>provided</scope>
         </dependency>
 
@@ -101,14 +43,6 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Annotations API -->
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>24.0.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
