@@ -55,4 +55,15 @@ public final class ComponentUtils {
 
         return str.toString().startsWith("§f") ? str.toString().replaceFirst("§f", "") : str.toString();
     }
+
+    public static boolean isLegacyText(@NotNull BaseComponent @NotNull [] components) {
+        @NotNull String text = ComponentUtils.getText(components);
+
+        try {
+            return ComponentSerializer.parse(text) == null;
+
+        } catch (JsonParseException e) {
+            return true;
+        }
+    }
 }

@@ -3,9 +3,9 @@ package com.storages.component;
 import com.storages.component.developers.BaseComponentStorageApi;
 import org.jetbrains.annotations.NotNull;
 
-public final class BaseComponentStorages {
+public class BaseComponentStorages {
 
-    private static final @NotNull BaseComponentStorages COMPONENT_STORAGE = new BaseComponentStorages();
+    private static final @NotNull BaseComponentStorages BASE_COMPONENT_STORAGES = new BaseComponentStorages();
 
     private @NotNull BaseComponentStorageApi storageApi;
 
@@ -21,8 +21,8 @@ public final class BaseComponentStorages {
         this.storageApi = storageApi;
     }
 
-    public static @NotNull BaseComponentStorages component() {
-        return BaseComponentStorages.COMPONENT_STORAGE;
+    public static @NotNull BaseComponentStorages storages() {
+        return BaseComponentStorages.BASE_COMPONENT_STORAGES;
     }
 
     public static void main(String[] args) {

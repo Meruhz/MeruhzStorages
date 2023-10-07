@@ -39,7 +39,10 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
                 throw new IllegalStateException("Storage '" + name + "' already is loaded");
 
             } else {
-                super.getStorages().add(super.getSerializer().deserialize(JsonConfiguration.getFromFile(new File(String.valueOf(filePath)))));
+                @NotNull BaseComponentStorage storage = (BaseComponentStorage) super.getSerializer().deserialize(JsonConfiguration.getFromFile(new File(String.valueOf(filePath))));
+                super.getStorages().add(storage);
+
+                return storage;
             }
         }
 
@@ -56,7 +59,7 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
             throw new NullPointerException("An message with id '" + id + "' already exists at storage '" + storage.getName() + "'");
         }
 
-        return new BaseComponentMessage((BaseComponentStorage) storage, id);
+        return new BaseComponentMessage(storage, id);
     }
 
     @Override

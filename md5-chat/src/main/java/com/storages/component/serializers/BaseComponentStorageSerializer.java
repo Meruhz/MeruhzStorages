@@ -1,8 +1,8 @@
 package com.storages.component.serializers;
 
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.storages.component.BaseComponentStorages;
 import com.storages.component.data.BaseComponentMessage;
 import com.storages.component.data.BaseComponentStorage;
@@ -12,6 +12,7 @@ import com.storages.core.data.Storage;
 import com.storages.core.serializer.Serializer;
 import com.storages.core.utils.LocaleUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +34,7 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
             @NotNull JsonObject contentJson = new JsonObject();
 
             for(Map.Entry<Locale, BaseComponent[]> entrySet : baseComponentMessage.getContents().entrySet()) {
-                contentJson.addProperty(LocaleUtils.toString(entrySet.getKey()), ComponentUtils.serialize(entrySet.getValue()));
+                contentJson.addProperty(LocaleUtils.toString(entrySet.getKey()), ComponentUtils.isLegacyText(entrySet.getValue()) ? ComponentUtils.getText(entrySet.getValue()) : ComponentUtils.serialize(entrySet.getValue()));
             }
 
             messageJson.add("content", contentJson);
@@ -52,17 +53,26 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
             @NotNull Locale defaultLocale = LocaleUtils.toLocale(json.get("default locale").getAsString());
 
             @NotNull JsonObject messagesJson = json.getAsJsonObject("messages");
-            @NotNull BaseComponentStorage storage = BaseComponentStorages.component().getBaseComponentStorageApi().createStorage(name, defaultLocale);
+            @NotNull BaseComponentStorage storage = BaseComponentStorages.storages().getBaseComponentStorageApi().createStorage(name, defaultLocale);
 
             for(Map.Entry<String, JsonElement> messageEntry : messagesJson.entrySet()) {
                 @NotNull String messageId = messageEntry.getKey();
                 @NotNull JsonObject messageJson = messageEntry.getValue().getAsJsonObject();
                 @NotNull JsonObject contentJson = messageJson.getAsJsonObject("content");
 
-                @NotNull BaseComponentMessage message = BaseComponentStorages.component().getBaseComponentStorageApi().createMessage(storage, messageId);
+                @NotNull BaseComponentMessage message = BaseComponentStorages.storages().getBaseComponentStorageApi().createMessage(storage, messageId);
 
                 for(Map.Entry<String, JsonElement> entrySet : contentJson.entrySet()) {
-                    message.addContent(LocaleUtils.toLocale(entrySet.getKey()), ComponentSerializer.parse(entrySet.getValue().getAsString()));
+                    @NotNull BaseComponent @NotNull [] text;
+
+                    try {
+                        text = ComponentSerializer.parse(entrySet.getValue().getAsString());
+
+                    } catch (JsonSyntaxException e) {
+                        text = new BaseComponent[] { new TextComponent(entrySet.getValue().getAsString()) };
+                    }
+
+                    message.addContent(LocaleUtils.toLocale(entrySet.getKey()), text);
                 }
 
                 storage.getMessages().add(message);

@@ -7,21 +7,22 @@ import com.storages.core.utils.configuration.JsonConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 
 public abstract class StorageProvider<M> implements Storage<M> {
 
     private final @NotNull String name;
     private final @NotNull Locale defaultLocale;
-    private final @NotNull Type storageType;
     private final @NotNull Set<@NotNull Message<M>> messages;
 
     private @Nullable JsonConfiguration jsonContent;
 
-    public StorageProvider(@NotNull String name, @NotNull Locale defaultLocale, @NotNull Type storageType) {
+    public StorageProvider(@NotNull String name, @NotNull Locale defaultLocale) {
         this.name = name;
         this.defaultLocale = defaultLocale;
-        this.storageType = storageType;
         this.messages = new LinkedHashSet<>();
     }
 
@@ -44,11 +45,6 @@ public abstract class StorageProvider<M> implements Storage<M> {
     }
 
     @Override
-    public @NotNull Type getType() {
-        return this.storageType;
-    }
-
-    @Override
     public @NotNull Set<@NotNull Message<M>> getMessages() {
         return this.messages;
     }
@@ -59,7 +55,7 @@ public abstract class StorageProvider<M> implements Storage<M> {
     }
 
     @Override
-    public @NotNull M getText(@NotNull Locale locale, @NotNull String id, @NotNull Objects... replaces) {
+    public @NotNull M getText(@NotNull Locale locale, @NotNull String id, @NotNull Object... replaces) {
         @NotNull Optional<Message<M>> optionalMessage = this.getMessage(id);
 
         if(!optionalMessage.isPresent()) {

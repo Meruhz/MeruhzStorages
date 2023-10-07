@@ -18,7 +18,6 @@
     <modules>
         <module>core</module>
         <module>md5-chat</module>
-        <module>legacy</module>
     </modules>
 
     <dependencies>
