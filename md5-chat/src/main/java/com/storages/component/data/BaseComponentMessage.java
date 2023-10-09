@@ -1,8 +1,10 @@
 package com.storages.component.data;
 
+import com.storages.component.BaseComponentStorages;
 import com.storages.component.utils.ComponentUtils;
 import com.storages.core.data.Storage;
 import com.storages.core.data.providers.MessageProvider;
+import com.storages.core.utils.configuration.JsonConfiguration;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;

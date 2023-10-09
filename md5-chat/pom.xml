@@ -67,7 +67,7 @@
 
                             <createDependencyReducedPom>false</createDependencyReducedPom>
 
-                            <finalName>BaseComponentStorages</finalName>
+                            <finalName>MeruhzStorages</finalName>
                             <outputDirectory>.</outputDirectory>
                         </configuration>
                     </execution>
@@ -82,7 +82,7 @@
             <groupId>com.storages</groupId>
             <artifactId>core</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <!-- BaseComponent API -->
