@@ -9,14 +9,14 @@
 1. 🔗 **Download the latest JAR file from the release section of this repository;**
 2. 📦 **Add the downloaded JAR file to your project. It's easy! Simply put the JAR file to your project source and execute this on Maven Goal:**
 
-```mvn install:install-file -Dfile=MeruhzStorages.jar -DgroupId=com.storages -DartifactId=md5-chat -Dversion=1.0-SNAPSHOT -Dpackaging=jar clean```
+```mvn install:install-file -Dfile=MeruhzStorages.jar -DgroupId=com.storages -DartifactId=main -Dversion=1.0-SNAPSHOT -Dpackaging=jar clean```
 
   **Then add this on your pom.xml:**
   
 ```html
 <dependency>
     <groupId>com.storages</groupId>
-    <artifactId>md5-chat</artifactId>
+    <artifactId>main</artifactId>
     <version>1.0-SNAPSHOT</version>
     <scope>compile</scope>
 </dependency>

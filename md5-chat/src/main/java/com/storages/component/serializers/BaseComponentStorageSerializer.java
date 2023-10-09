@@ -34,7 +34,18 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
             @NotNull JsonObject contentJson = new JsonObject();
 
             for(Map.Entry<Locale, BaseComponent[]> entrySet : baseComponentMessage.getContents().entrySet()) {
-                contentJson.addProperty(LocaleUtils.toString(entrySet.getKey()), ComponentUtils.isLegacyText(entrySet.getValue()) ? ComponentUtils.getText(entrySet.getValue()) : ComponentUtils.serialize(entrySet.getValue()));
+                @NotNull String text;
+
+                if(ComponentUtils.isLegacyText(entrySet.getValue())) {
+                    text = ComponentUtils.getText(entrySet.getValue());
+
+                } else {
+                    text = ComponentUtils.serialize(entrySet.getValue());
+                }
+
+                // TODO [09/10/2023]: FIX LEGACY TEXT READER
+
+                contentJson.addProperty(LocaleUtils.toString(entrySet.getKey()), text);
             }
 
             messageJson.add("content", contentJson);
@@ -53,14 +64,14 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
             @NotNull Locale defaultLocale = LocaleUtils.toLocale(json.get("default locale").getAsString());
 
             @NotNull JsonObject messagesJson = json.getAsJsonObject("messages");
-            @NotNull BaseComponentStorage storage = BaseComponentStorages.storages().getBaseComponentStorageApi().createStorage(name, defaultLocale);
+            @NotNull BaseComponentStorage storage = new BaseComponentStorage(name, defaultLocale);
 
             for(Map.Entry<String, JsonElement> messageEntry : messagesJson.entrySet()) {
                 @NotNull String messageId = messageEntry.getKey();
                 @NotNull JsonObject messageJson = messageEntry.getValue().getAsJsonObject();
                 @NotNull JsonObject contentJson = messageJson.getAsJsonObject("content");
 
-                @NotNull BaseComponentMessage message = BaseComponentStorages.storages().getBaseComponentStorageApi().createMessage(storage, messageId);
+                @NotNull BaseComponentMessage message = new BaseComponentMessage(storage, messageId);
 
                 for(Map.Entry<String, JsonElement> entrySet : contentJson.entrySet()) {
                     @NotNull BaseComponent @NotNull [] text;
@@ -78,6 +89,7 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
                 storage.getMessages().add(message);
             }
 
+            BaseComponentStorages.storages().getBaseComponentStorageApi().getStorages().add(storage);
             return storage;
 
         } catch (Throwable throwable) {

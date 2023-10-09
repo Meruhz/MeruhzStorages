@@ -1,11 +1,11 @@
 package com.storages.core.data.providers;
 
+import com.storages.core.StoragesCore;
 import com.storages.core.data.Message;
 import com.storages.core.data.Storage;
 import com.storages.core.utils.LocaleUtils;
 import com.storages.core.utils.configuration.JsonConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashSet;
 import java.util.Locale;
@@ -18,16 +18,17 @@ public abstract class StorageProvider<M> implements Storage<M> {
     private final @NotNull Locale defaultLocale;
     private final @NotNull Set<@NotNull Message<M>> messages;
 
-    private @Nullable JsonConfiguration jsonContent;
+    private @NotNull JsonConfiguration jsonContent;
 
     public StorageProvider(@NotNull String name, @NotNull Locale defaultLocale) {
         this.name = name;
         this.defaultLocale = defaultLocale;
         this.messages = new LinkedHashSet<>();
+        this.jsonContent = new JsonConfiguration(StoragesCore.getDataFolder(), name);
     }
 
     public @NotNull JsonConfiguration getJsonContent() {
-        return Optional.ofNullable(this.jsonContent).orElseThrow(() -> new NullPointerException("The storage must be initialized through API"));
+        return this.jsonContent;
     }
 
     public void setJsonContent(@NotNull JsonConfiguration jsonContent) {

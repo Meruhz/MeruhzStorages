@@ -3,6 +3,7 @@ package com.storages.component.developers;
 import com.storages.component.data.BaseComponentMessage;
 import com.storages.component.data.BaseComponentStorage;
 import com.storages.component.serializers.BaseComponentStorageSerializer;
+import com.storages.core.StoragesCore;
 import com.storages.core.data.Storage;
 import com.storages.core.developers.provider.StorageApiProvider;
 import com.storages.core.serializer.Serializer;
@@ -30,8 +31,7 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
 
     @Override
     public @NotNull BaseComponentStorage createStorage(@NotNull String name, @NotNull Locale defaultLocale) {
-        @NotNull File target = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages");
-        @NotNull Path filePath = target.toPath().resolve(name.replace(" ", "_") + ".json");
+        @NotNull Path filePath = StoragesCore.getDataFolder().toPath().resolve(name.replace(" ", "_") + ".json");
 
         if(Files.exists(filePath)) {
 
@@ -39,17 +39,13 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
                 throw new IllegalStateException("Storage '" + name + "' already is loaded");
 
             } else {
-                @NotNull BaseComponentStorage storage = (BaseComponentStorage) super.getSerializer().deserialize(JsonConfiguration.getFromFile(new File(String.valueOf(filePath))));
-                super.getStorages().add(storage);
-
-                return storage;
+                return (BaseComponentStorage) super.getSerializer().deserialize(JsonConfiguration.getFromFile(new File(String.valueOf(filePath))));
             }
         }
 
         @NotNull BaseComponentStorage storage = new BaseComponentStorage(name, defaultLocale);
-        storage.setJsonContent(new JsonConfiguration(target, name));
+        super.getStorages().add(storage);
 
-        this.getStorages().add(storage);
         return storage;
     }
 
@@ -64,18 +60,32 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
 
     @Override
     public void load() {
-        if(this.isLoaded()) {
+        if(super.isLoaded()) {
             throw new IllegalStateException("MeruhzStorages API already is loaded");
         }
 
         @NotNull File target = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages");
+        target.mkdirs();
+
         if(Files.isDirectory(target.toPath())) {
 
             try (@NotNull DirectoryStream<Path> stream = Files.newDirectoryStream(target.toPath())) {
 
+                int success = 0, errors = 0;
                 for(Path path : stream) {
-                    this.getStorages().add(this.getSerializer().deserialize(JsonConfiguration.getFromFile(path.toFile())));
+
+                    try {
+                        super.getSerializer().deserialize(JsonConfiguration.getFromFile(path.toFile()));
+                        success++;
+
+                    } catch (Throwable throwable) {
+                        StoragesCore.getLogger().info("Failed to load Storage from file '" + path.toFile().getName() + "'");
+                        throwable.printStackTrace();
+                        errors++;
+                    }
                 }
+
+                StoragesCore.getLogger().info("Successfully loaded " + success + " storage(s) with " + errors + " error(s)");
 
             } catch (IOException e) {
                 throw new RuntimeException("An error occurred while reading storage files", e);

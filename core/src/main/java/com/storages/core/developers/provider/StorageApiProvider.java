@@ -1,5 +1,6 @@
 package com.storages.core.developers.provider;
 
+import com.storages.core.StoragesCore;
 import com.storages.core.data.Storage;
 import com.storages.core.developers.StorageApi;
 import com.storages.core.serializer.Serializer;
@@ -47,12 +48,22 @@ public abstract class StorageApiProvider<M> implements StorageApi<M> {
             throw new IllegalStateException("MeruhzStorages API is not loaded");
         }
 
+        int success = 0, errors = 0;
         for(Storage<M> storage : this.getStorages()) {
-            storage.save();
+            try {
+                storage.save();
+                success++;
+
+            } catch (Throwable throwable) {
+                StoragesCore.getLogger().info("Failed to unload storage '" + storage.getName() + "'");
+                throwable.printStackTrace();
+                errors++;
+            }
         }
 
-        this.getStorages().clear();
+        StoragesCore.getLogger().info("Successfully unloaded " + success + " storage(s) with " + errors + " error(s)");
 
+        this.getStorages().clear();
         this.loaded = false;
     }
 }

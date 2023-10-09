@@ -1,6 +1,23 @@
 package com.storages.core;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.logging.Logger;
+
 public class StoragesCore {
+
+    private static final @NotNull Logger LOGGER = Logger.getLogger("MeruhzStorages");
+    private static final @NotNull File STORAGES = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages");
+
+    public static @NotNull Logger getLogger() {
+        return StoragesCore.LOGGER;
+    }
+
+    public static @NotNull File getDataFolder() {
+        return StoragesCore.STORAGES;
+    }
 
     public static void main(String[] args) {
         System.out.println("***********************************");
