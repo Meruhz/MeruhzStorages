@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Locale;
 
 public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]> {
@@ -64,12 +63,14 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
             throw new IllegalStateException("MeruhzStorages API already is loaded");
         }
 
-        @NotNull File target = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages");
-        target.mkdirs();
+        @NotNull File dataFolder = StoragesCore.getDataFolder();
 
-        if(Files.isDirectory(target.toPath())) {
+        if(dataFolder.mkdirs()) {
+            throw new NullPointerException("Folder '" + dataFolder.getAbsolutePath() + "' could not be created");
 
-            try (@NotNull DirectoryStream<Path> stream = Files.newDirectoryStream(target.toPath())) {
+        } else if(Files.isDirectory(dataFolder.toPath())) {
+
+            try (@NotNull DirectoryStream<Path> stream = Files.newDirectoryStream(dataFolder.toPath())) {
 
                 int success = 0, errors = 0;
                 for(Path path : stream) {
@@ -79,7 +80,7 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
                         success++;
 
                     } catch (Throwable throwable) {
-                        StoragesCore.getLogger().info("Failed to load Storage from file '" + path.toFile().getName() + "'");
+                        StoragesCore.getLogger().severe("Failed to load storage from file '" + path.toFile().getName() + "'");
                         throwable.printStackTrace();
                         errors++;
                     }
@@ -90,6 +91,9 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
             } catch (IOException e) {
                 throw new RuntimeException("An error occurred while reading storage files", e);
             }
+
+        } else {
+            throw new IllegalStateException("File '" + dataFolder.getAbsolutePath() + "' is not a folder");
         }
 
         super.loaded = true;

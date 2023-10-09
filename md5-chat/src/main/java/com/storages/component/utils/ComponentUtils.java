@@ -60,7 +60,8 @@ public final class ComponentUtils {
         @NotNull String text = ComponentUtils.getText(components);
 
         try {
-            return ComponentSerializer.parse(text) == null;
+            ComponentSerializer.parse(text);
+            return false;
 
         } catch (JsonParseException e) {
             return true;

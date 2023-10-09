@@ -45,7 +45,7 @@ public abstract class MessageProvider<M> implements Message<M> {
         try {
             return this.getContents().get(locale);
 
-        } catch (NullPointerException ignored) {
+        } catch (NullPointerException ex) {
             try {
                 return this.getContents().get(this.getStorage().getDefaultLocale());
 

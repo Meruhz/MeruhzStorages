@@ -56,9 +56,12 @@ public class JsonConfiguration extends AbstractConfiguration {
             }
 
         } else if(this.getFile().length() != 0) {
+            @NotNull JsonElement configuration = JsonConfiguration.getFromFile(super.getFile());
 
-            this.setConfiguration(JsonConfiguration.getFromFile(this.getFile()), false);
-            this.save();
+            if(!configuration.equals(this.getConfiguration())) {
+                this.setConfiguration(configuration, false);
+                this.save();
+            }
 
         } else {
             this.save();

@@ -34,16 +34,13 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
             @NotNull JsonObject contentJson = new JsonObject();
 
             for(Map.Entry<Locale, BaseComponent[]> entrySet : baseComponentMessage.getContents().entrySet()) {
-                @NotNull String text;
+                // TODO [09/10/2023]: FIX LEGACY TEXT READER
 
-                if(ComponentUtils.isLegacyText(entrySet.getValue())) {
-                    text = ComponentUtils.getText(entrySet.getValue());
+                @NotNull String text = ComponentUtils.getText(entrySet.getValue());
 
-                } else {
+                if(!ComponentUtils.isLegacyText(new BaseComponent[]{ new TextComponent(text)})) {
                     text = ComponentUtils.serialize(entrySet.getValue());
                 }
-
-                // TODO [09/10/2023]: FIX LEGACY TEXT READER
 
                 contentJson.addProperty(LocaleUtils.toString(entrySet.getKey()), text);
             }

@@ -55,7 +55,7 @@ public abstract class StorageApiProvider<M> implements StorageApi<M> {
                 success++;
 
             } catch (Throwable throwable) {
-                StoragesCore.getLogger().info("Failed to unload storage '" + storage.getName() + "'");
+                StoragesCore.getLogger().severe("Failed to unload storage '" + storage.getName() + "'");
                 throwable.printStackTrace();
                 errors++;
             }
