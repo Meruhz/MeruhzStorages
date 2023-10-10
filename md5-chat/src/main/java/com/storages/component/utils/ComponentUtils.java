@@ -55,4 +55,20 @@ public final class ComponentUtils {
 
         return str.toString().startsWith("§f") ? str.toString().replaceFirst("§f", "") : str.toString();
     }
+
+    public static boolean isLegacyText(@NotNull BaseComponent... components) {
+        try {
+            @NotNull JsonObject message = JsonParser.parseString(ComponentUtils.getText(components)).getAsJsonObject();
+            @NotNull String[] attributes = {"text", "bold", "italic", "underlined", "strikethrough", "obfuscated", "color", "clickEvent", "hoverEvent", "insertion", "font"};
+
+            for(String attribute : attributes) {
+                return message.has(attribute) && ComponentSerializer.parse(message.toString()) == null;
+            }
+
+            return false;
+
+        } catch (JsonSyntaxException e) {
+            return true;
+        }
+    }
 }
