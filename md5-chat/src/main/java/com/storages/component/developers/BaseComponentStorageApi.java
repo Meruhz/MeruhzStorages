@@ -30,7 +30,7 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
 
     @Override
     public @NotNull BaseComponentStorage createStorage(@NotNull String name, @NotNull Locale defaultLocale) {
-        @NotNull Path filePath = StoragesCore.getDataFolder().toPath().resolve(name.replace(" ", "_") + ".json");
+        @NotNull Path filePath = StoragesCore.getStorages().toPath().resolve(name.replace(" ", "_") + ".json");
 
         if(Files.exists(filePath)) {
 
@@ -60,42 +60,36 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
     @Override
     public void load() {
         if(super.isLoaded()) {
-            throw new IllegalStateException("MeruhzStorages API already is loaded");
+            throw new IllegalStateException("MeruhzStorages API is already loaded");
         }
 
-        @NotNull File dataFolder = StoragesCore.getDataFolder();
+        @NotNull File dataFolder = StoragesCore.getStorages();
 
-        if(dataFolder.mkdirs()) {
-            throw new NullPointerException("Folder '" + dataFolder.getAbsolutePath() + "' could not be created");
+        if(!dataFolder.isDirectory() && !dataFolder.mkdirs()) {
+            throw new RuntimeException("Folder '" + dataFolder.getAbsolutePath() + "' could not be created");
+        }
 
-        } else if(Files.isDirectory(dataFolder.toPath())) {
+        int success = 0, errors = 0;
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dataFolder.toPath())) {
 
-            try (@NotNull DirectoryStream<Path> stream = Files.newDirectoryStream(dataFolder.toPath())) {
+            for(Path path : stream) {
 
-                int success = 0, errors = 0;
-                for(Path path : stream) {
+                try {
+                    super.getSerializer().deserialize(JsonConfiguration.getFromFile(path.toFile()));
+                    success++;
 
-                    try {
-                        super.getSerializer().deserialize(JsonConfiguration.getFromFile(path.toFile()));
-                        success++;
-
-                    } catch (Throwable throwable) {
-                        StoragesCore.getLogger().severe("Failed to load storage from file '" + path.toFile().getName() + "'");
-                        throwable.printStackTrace();
-                        errors++;
-                    }
+                } catch (Throwable throwable) {
+                    StoragesCore.getLogger().severe("Failed to load storage from file '" + path.toFile().getName() + "'");
+                    throwable.printStackTrace();
+                    errors++;
                 }
-
-                StoragesCore.getLogger().info("Successfully loaded " + success + " storage(s) with " + errors + " error(s)");
-
-            } catch (IOException e) {
-                throw new RuntimeException("An error occurred while reading storage files", e);
             }
 
-        } else {
-            throw new IllegalStateException("File '" + dataFolder.getAbsolutePath() + "' is not a folder");
+        } catch (IOException e) {
+            throw new RuntimeException("An error occurred while reading storage files", e);
         }
 
+        StoragesCore.getLogger().info("Successfully loaded " + success + " storage(s) with " + errors + " error(s)");
         super.loaded = true;
     }
 }

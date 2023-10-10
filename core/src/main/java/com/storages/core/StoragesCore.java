@@ -9,13 +9,13 @@ import java.util.logging.Logger;
 public class StoragesCore {
 
     private static final @NotNull Logger LOGGER = Logger.getLogger("MeruhzStorages");
-    private static final @NotNull File STORAGES = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages");
+    private static final @NotNull File STORAGES = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages" + File.separator);
 
     public static @NotNull Logger getLogger() {
         return StoragesCore.LOGGER;
     }
 
-    public static @NotNull File getDataFolder() {
+    public static @NotNull File getStorages() {
         return StoragesCore.STORAGES;
     }
 

@@ -2,7 +2,7 @@ package com.storages.component.serializers;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.JsonParseException;
 import com.storages.component.BaseComponentStorages;
 import com.storages.component.data.BaseComponentMessage;
 import com.storages.component.data.BaseComponentStorage;
@@ -13,7 +13,6 @@ import com.storages.core.serializer.Serializer;
 import com.storages.core.utils.LocaleUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -34,15 +33,7 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
             @NotNull JsonObject contentJson = new JsonObject();
 
             for(Map.Entry<Locale, BaseComponent[]> entrySet : baseComponentMessage.getContents().entrySet()) {
-                // TODO [09/10/2023]: FIX LEGACY TEXT READER
-
-                @NotNull String text = ComponentUtils.getText(entrySet.getValue());
-
-                if(!ComponentUtils.isLegacyText(new BaseComponent[]{ new TextComponent(text)})) {
-                    text = ComponentUtils.serialize(entrySet.getValue());
-                }
-
-                contentJson.addProperty(LocaleUtils.toString(entrySet.getKey()), text);
+                contentJson.addProperty(LocaleUtils.toString(entrySet.getKey()), ComponentUtils.getText(entrySet.getValue()));
             }
 
             messageJson.add("content", contentJson);
@@ -57,6 +48,11 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
     public @NotNull BaseComponentStorage deserialize(@NotNull JsonElement element) {
         try {
             @NotNull JsonObject json = element.getAsJsonObject();
+
+            if(!json.has("name") || !json.has("default locale") || !json.has("messages")) {
+                throw new JsonParseException("Storage must have property \"name\", \"default locale\" and \"messages\"");
+            }
+
             @NotNull String name = json.get("name").getAsString();
             @NotNull Locale defaultLocale = LocaleUtils.toLocale(json.get("default locale").getAsString());
 
@@ -71,16 +67,7 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
                 @NotNull BaseComponentMessage message = new BaseComponentMessage(storage, messageId);
 
                 for(Map.Entry<String, JsonElement> entrySet : contentJson.entrySet()) {
-                    @NotNull BaseComponent @NotNull [] text;
-
-                    try {
-                        text = ComponentSerializer.parse(entrySet.getValue().getAsString());
-
-                    } catch (JsonSyntaxException e) {
-                        text = new BaseComponent[] { new TextComponent(entrySet.getValue().getAsString()) };
-                    }
-
-                    message.addContent(LocaleUtils.toLocale(entrySet.getKey()), text);
+                    message.addContent(LocaleUtils.toLocale(entrySet.getKey()), new BaseComponent[] { new TextComponent(ComponentUtils.getText(new TextComponent(entrySet.getValue().getAsString())))});
                 }
 
                 storage.getMessages().add(message);

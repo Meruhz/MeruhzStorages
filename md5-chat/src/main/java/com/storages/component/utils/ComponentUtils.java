@@ -46,25 +46,13 @@ public final class ComponentUtils {
         }
     }
 
-    public static @NotNull String getText(BaseComponent... components) {
-        StringBuilder str = new StringBuilder();
+    public static @NotNull String getText(@NotNull BaseComponent... components) {
+        @NotNull StringBuilder str = new StringBuilder();
 
         for(BaseComponent component : components) {
             str.append(component.toLegacyText());
         }
 
         return str.toString().startsWith("§f") ? str.toString().replaceFirst("§f", "") : str.toString();
-    }
-
-    public static boolean isLegacyText(@NotNull BaseComponent @NotNull [] components) {
-        @NotNull String text = ComponentUtils.getText(components);
-
-        try {
-            ComponentSerializer.parse(text);
-            return false;
-
-        } catch (JsonParseException e) {
-            return true;
-        }
     }
 }

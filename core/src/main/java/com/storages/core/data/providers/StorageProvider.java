@@ -24,7 +24,7 @@ public abstract class StorageProvider<M> implements Storage<M> {
         this.name = name;
         this.defaultLocale = defaultLocale;
         this.messages = new LinkedHashSet<>();
-        this.jsonContent = new JsonConfiguration(StoragesCore.getDataFolder(), name);
+        this.jsonContent = new JsonConfiguration(StoragesCore.getStorages(), name);
     }
 
     public @NotNull JsonConfiguration getJsonContent() {
