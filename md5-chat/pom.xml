@@ -92,6 +92,13 @@
             <version>1.16-R0.4</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>codes.laivy</groupId>
+            <artifactId>lvml</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

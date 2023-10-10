@@ -33,7 +33,6 @@ public class StoragesCore {
         System.out.println("Explore our library features:");
         System.out.println(" • Message storage creation;");
         System.out.println(" • BaseComponent API integrated;");
-        System.out.println(" • Legacy storages option;");
         System.out.println(" • Storages serialized as JSON;");
         System.out.println(" • Custom API support;");
         System.out.println(" • Fully API.");
