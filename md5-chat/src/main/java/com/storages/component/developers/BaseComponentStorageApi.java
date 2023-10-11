@@ -69,19 +69,16 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
             throw new RuntimeException("Folder '" + dataFolder.getAbsolutePath() + "' could not be created");
         }
 
-        int success = 0, errors = 0;
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dataFolder.toPath())) {
 
             for(Path path : stream) {
 
                 try {
                     super.getSerializer().deserialize(JsonConfiguration.getFromFile(path.toFile()));
-                    success++;
 
                 } catch (Throwable throwable) {
                     StoragesCore.getLogger().severe("Failed to load storage from file '" + path.toFile().getName() + "'");
                     throwable.printStackTrace();
-                    errors++;
                 }
             }
 
@@ -89,7 +86,6 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
             throw new RuntimeException("An error occurred while reading storage files", e);
         }
 
-        StoragesCore.getLogger().info("Successfully loaded " + success + " storage(s) with " + errors + " error(s)");
         super.loaded = true;
     }
 }

@@ -48,20 +48,16 @@ public abstract class StorageApiProvider<M> implements StorageApi<M> {
             throw new IllegalStateException("MeruhzStorages API is not loaded");
         }
 
-        int success = 0, errors = 0;
         for(Storage<M> storage : this.getStorages()) {
+
             try {
                 storage.save();
-                success++;
 
             } catch (Throwable throwable) {
                 StoragesCore.getLogger().severe("Failed to unload storage '" + storage.getName() + "'");
                 throwable.printStackTrace();
-                errors++;
             }
         }
-
-        StoragesCore.getLogger().info("Successfully unloaded " + success + " storage(s) with " + errors + " error(s)");
 
         this.getStorages().clear();
         this.loaded = false;
