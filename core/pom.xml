@@ -5,11 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.storages</groupId>
-        <artifactId>main</artifactId>
+        <groupId>codes.meruhz</groupId>
+        <artifactId>storages</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <groupId>codes.meruhz.storages</groupId>
     <artifactId>core</artifactId>
     <version>1.0-SNAPSHOT</version>
 
