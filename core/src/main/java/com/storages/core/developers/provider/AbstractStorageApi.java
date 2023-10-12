@@ -10,14 +10,14 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class StorageApiProvider<M, L> implements StorageApi<M, L> {
+public abstract class AbstractStorageApi<M, L> implements StorageApi<M, L> {
 
     private final @NotNull Serializer<Storage<M, L>> serializer;
     private final @NotNull Set<@NotNull Storage<M, L>> storages;
 
     protected boolean loaded;
 
-    public StorageApiProvider(@NotNull Serializer<Storage<M, L>> serializer) {
+    public AbstractStorageApi(@NotNull Serializer<Storage<M, L>> serializer) {
         this.serializer = serializer;
         this.storages = new LinkedHashSet<>();
     }

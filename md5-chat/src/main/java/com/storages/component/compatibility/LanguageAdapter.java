@@ -1,5 +1,6 @@
-package com.storages.component.adapters;
+package com.storages.component.compatibility;
 
+import codes.laivy.mlanguage.lang.Locale;
 import com.storages.component.utils.ComponentUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class LanguageAdapter<S, L> {
+public abstract class LanguageAdapter<S> {
 
     private final @NotNull Set<@NotNull S> storages;
 
@@ -26,9 +27,9 @@ public abstract class LanguageAdapter<S, L> {
 
     public abstract @NotNull Optional<S> getStorage(@NotNull String name);
 
-    public abstract @NotNull BaseComponent @NotNull [] getText(@NotNull L locale, @NotNull String id, @NotNull Object... replaces);
+    public abstract @NotNull BaseComponent @NotNull [] getText(@NotNull Locale locale, @NotNull String id, @NotNull Object... replaces);
 
-    public @NotNull String getLegacyText(@NotNull L locale, @NotNull String id, @NotNull Object... replaces) {
+    public @NotNull String getLegacyText(@NotNull Locale locale, @NotNull String id, @NotNull Object... replaces) {
         return ComponentUtils.getText(this.getText(locale, id, replaces));
     }
 

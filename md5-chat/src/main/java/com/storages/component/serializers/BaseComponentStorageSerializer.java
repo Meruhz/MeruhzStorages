@@ -1,8 +1,8 @@
 package com.storages.component.serializers;
 
+import codes.laivy.mlanguage.lang.Locale;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.storages.component.BaseComponentStorages;
 import com.storages.component.data.BaseComponentMessage;
 import com.storages.component.data.BaseComponentStorage;
@@ -10,30 +10,28 @@ import com.storages.component.utils.ComponentUtils;
 import com.storages.core.data.Message;
 import com.storages.core.data.Storage;
 import com.storages.core.serializer.Serializer;
-import com.storages.core.utils.LocaleUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
 import java.util.Map;
 
-public class BaseComponentStorageSerializer implements Serializer<Storage<BaseComponent[]>> {
+public class BaseComponentStorageSerializer implements Serializer<Storage<BaseComponent[], Locale>> {
 
     @Override
-    public @NotNull JsonElement serialize(@NotNull Storage<BaseComponent[]> storage) {
+    public @NotNull JsonElement serialize(@NotNull Storage<BaseComponent[], Locale> storage) {
         @NotNull JsonObject json = new JsonObject();
         json.addProperty("name", storage.getName());
-        json.addProperty("default locale", LocaleUtils.toString(storage.getDefaultLocale()));
+        json.addProperty("default locale", storage.getDefaultLocale().toString());
 
         @NotNull JsonObject messagesJson = new JsonObject();
-        for(Message<BaseComponent[]> message : storage.getMessages()) {
+        for(Message<BaseComponent[], Locale> message : storage.getMessages()) {
             @NotNull BaseComponentMessage baseComponentMessage = (BaseComponentMessage) message;
             @NotNull JsonObject messageJson = new JsonObject();
             @NotNull JsonObject contentJson = new JsonObject();
 
             for(Map.Entry<Locale, BaseComponent[]> entrySet : baseComponentMessage.getContents().entrySet()) {
-                contentJson.addProperty(LocaleUtils.toString(entrySet.getKey()), ComponentUtils.getText(entrySet.getValue()));
+                contentJson.addProperty(entrySet.getKey().toString(), ComponentUtils.getText(entrySet.getValue()));
             }
 
             messageJson.add("content", contentJson);
@@ -49,12 +47,8 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
         try {
             @NotNull JsonObject json = element.getAsJsonObject();
 
-            if(!json.has("name") || !json.has("default locale") || !json.has("messages")) {
-                throw new JsonParseException("Storage must have property \"name\", \"default locale\" and \"messages\"");
-            }
-
             @NotNull String name = json.get("name").getAsString();
-            @NotNull Locale defaultLocale = LocaleUtils.toLocale(json.get("default locale").getAsString());
+            @NotNull Locale defaultLocale = Locale.valueOf(json.get("default locale").getAsString());
 
             @NotNull JsonObject messagesJson = json.getAsJsonObject("messages");
             @NotNull BaseComponentStorage storage = new BaseComponentStorage(name, defaultLocale);
@@ -67,7 +61,7 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
                 @NotNull BaseComponentMessage message = new BaseComponentMessage(storage, messageId);
 
                 for(Map.Entry<String, JsonElement> entrySet : contentJson.entrySet()) {
-                    message.addContent(LocaleUtils.toLocale(entrySet.getKey()), new BaseComponent[] { new TextComponent(ComponentUtils.getText(new TextComponent(entrySet.getValue().getAsString())))});
+                    message.addContent(Locale.valueOf(entrySet.getKey()), new BaseComponent[] { new TextComponent(ComponentUtils.getText(new TextComponent(entrySet.getValue().getAsString())))});
                 }
 
                 storage.getMessages().add(message);

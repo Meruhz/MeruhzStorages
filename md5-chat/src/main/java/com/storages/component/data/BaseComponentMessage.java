@@ -1,18 +1,22 @@
 package com.storages.component.data;
 
+import codes.laivy.mlanguage.lang.Locale;
 import com.storages.component.utils.ComponentUtils;
 import com.storages.core.data.Storage;
-import com.storages.core.data.providers.MessageProvider;
+import com.storages.core.data.providers.AbstractMessage;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
+public class BaseComponentMessage extends AbstractMessage<BaseComponent[], Locale> {
 
-public class BaseComponentMessage extends MessageProvider<BaseComponent[]> {
-
-    public BaseComponentMessage(@NotNull Storage<BaseComponent[]> storage, @NotNull String id) {
+    public BaseComponentMessage(@NotNull Storage<BaseComponent[], Locale> storage, @NotNull String id) {
         super(storage, id);
+    }
+
+    @Override
+    public @NotNull Locale @NotNull [] getLocales() {
+        return super.getContents().keySet().toArray(new Locale[0]);
     }
 
     @Override
@@ -27,6 +31,6 @@ public class BaseComponentMessage extends MessageProvider<BaseComponent[]> {
     }
 
     public @NotNull String getLegacyText(@NotNull Locale locale) {
-        return ComponentUtils.getText(this.getText(locale));
+        return ComponentUtils.getText(super.getText(locale));
     }
 }

@@ -1,14 +1,14 @@
-package com.storages.component.adapters.mzstr;
+package com.storages.component.compatibility.providers;
 
-import com.storages.component.adapters.LanguageAdapter;
+import codes.laivy.mlanguage.lang.Locale;
+import com.storages.component.compatibility.LanguageAdapter;
 import com.storages.component.data.BaseComponentStorage;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
 import java.util.Optional;
 
-public class MeruhzStoragesAdapter extends LanguageAdapter<BaseComponentStorage, Locale> {
+public class MeruhzStoragesAdapter extends LanguageAdapter<BaseComponentStorage> {
 
     @Override
     public @NotNull Optional<BaseComponentStorage> getStorage(@NotNull String name) {

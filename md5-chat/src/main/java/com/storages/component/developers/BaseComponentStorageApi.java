@@ -1,13 +1,15 @@
 package com.storages.component.developers;
 
+import codes.laivy.mlanguage.lang.Locale;
+import com.google.gson.JsonParser;
 import com.storages.component.data.BaseComponentMessage;
 import com.storages.component.data.BaseComponentStorage;
 import com.storages.component.serializers.BaseComponentStorageSerializer;
 import com.storages.core.StoragesCore;
 import com.storages.core.data.Storage;
-import com.storages.core.developers.provider.StorageApiProvider;
+import com.storages.core.developers.provider.AbstractStorageApi;
 import com.storages.core.serializer.Serializer;
-import com.storages.core.utils.configuration.JsonConfiguration;
+import com.storages.core.utils.configuration.AbstractConfiguration;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,15 +18,14 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Locale;
 
-public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]> {
+public class BaseComponentStorageApi extends AbstractStorageApi<BaseComponent[], Locale> {
 
     public BaseComponentStorageApi() {
         super(new BaseComponentStorageSerializer());
     }
 
-    public BaseComponentStorageApi(@NotNull Serializer<Storage<BaseComponent[]>> serializer) {
+    public BaseComponentStorageApi(@NotNull Serializer<Storage<BaseComponent[], Locale>> serializer) {
         super(serializer);
     }
 
@@ -37,8 +38,11 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
             if(super.getStorage(name).isPresent()) {
                 throw new IllegalStateException("Storage '" + name + "' already is loaded");
 
-            } else {
-                return (BaseComponentStorage) super.getSerializer().deserialize(JsonConfiguration.getFromFile(new File(String.valueOf(filePath))));
+            } else try {
+                return (BaseComponentStorage) super.getSerializer().deserialize(JsonParser.parseString(AbstractConfiguration.getFileContent(filePath.toFile())));
+
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to load storage from file: " + filePath.toFile().getName(), e);
             }
         }
 
@@ -49,7 +53,7 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
     }
 
     @Override
-    public @NotNull BaseComponentMessage createMessage(@NotNull Storage<BaseComponent[]> storage, @NotNull String id) {
+    public @NotNull BaseComponentMessage createMessage(@NotNull Storage<BaseComponent[], Locale> storage, @NotNull String id) {
         if(storage.getMessage(id).isPresent()) {
             throw new NullPointerException("An message with id '" + id + "' already exists at storage '" + storage.getName() + "'");
         }
@@ -74,11 +78,11 @@ public class BaseComponentStorageApi extends StorageApiProvider<BaseComponent[]>
             for(Path path : stream) {
 
                 try {
-                    super.getSerializer().deserialize(JsonConfiguration.getFromFile(path.toFile()));
+                    super.getSerializer().deserialize(JsonParser.parseString(AbstractConfiguration.getFileContent(path.toFile())));
 
-                } catch (Throwable throwable) {
+                } catch (IOException e) {
                     StoragesCore.getLogger().severe("Failed to load storage from file '" + path.toFile().getName() + "'");
-                    throwable.printStackTrace();
+                    e.printStackTrace();
                 }
             }
 

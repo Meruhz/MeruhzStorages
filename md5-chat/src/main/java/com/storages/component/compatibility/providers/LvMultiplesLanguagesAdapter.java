@@ -1,9 +1,9 @@
-package com.storages.component.adapters.lvml;
+package com.storages.component.compatibility.providers;
 
 import codes.laivy.mlanguage.api.bungee.components.BaseComponentMessage;
 import codes.laivy.mlanguage.api.bungee.components.BaseComponentMessageStorage;
 import codes.laivy.mlanguage.lang.Locale;
-import com.storages.component.adapters.LanguageAdapter;
+import com.storages.component.compatibility.LanguageAdapter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class LvMultiplesLanguagesAdapter extends LanguageAdapter<BaseComponentMessageStorage<BaseComponentMessage>, Locale> {
+public class LvMultiplesLanguagesAdapter extends LanguageAdapter<BaseComponentMessageStorage<BaseComponentMessage>> {
 
     public LvMultiplesLanguagesAdapter() {
         this(new LinkedHashSet<>());
