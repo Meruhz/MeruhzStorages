@@ -5,23 +5,21 @@ import com.storages.core.data.Storage;
 import com.storages.core.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
-public interface StorageApi<M> {
+public interface StorageApi<M, L> {
 
-    @NotNull Set<@NotNull Storage<M>> getStorages();
-    @NotNull Serializer<Storage<M>> getSerializer();
+    @NotNull Set<@NotNull Storage<M, L>> getStorages();
+    @NotNull Serializer<Storage<M, L>> getSerializer();
 
-    default @NotNull Optional<Storage<M>> getStorage(@NotNull String name) {
+    default @NotNull Optional<Storage<M, L>> getStorage(@NotNull String name) {
         return this.getStorages().stream().filter(storage -> storage.getName().equals(name)).findFirst();
     }
 
-    @NotNull Storage<M> createStorage(@NotNull String name, @NotNull Locale defaultLocale);
+    @NotNull Storage<M, L> createStorage(@NotNull String name, @NotNull L defaultLocale);
 
-    @NotNull Message<M> createMessage(@NotNull Storage<M> storage, @NotNull String id);
-
+    @NotNull Message<M, L> createMessage(@NotNull Storage<M, L> storage, @NotNull String id);
 
     boolean isLoaded();
 

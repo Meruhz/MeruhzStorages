@@ -2,19 +2,17 @@ package com.storages.core.data;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
+public interface Message<M, L> {
 
-public interface Message<M> {
-
-    @NotNull Storage<M> getStorage();
+    @NotNull Storage<M, L> getStorage();
 
     @NotNull String getId();
 
-    @NotNull Locale @NotNull [] getLocales();
+    @NotNull L @NotNull [] getLocales();
 
-    @NotNull M getText(@NotNull Locale locale);
+    @NotNull M getText(@NotNull L locale);
 
-    @NotNull M replace(@NotNull Locale locale, @NotNull Object @NotNull [] replaces);
+    @NotNull M replace(@NotNull L locale, @NotNull Object @NotNull [] replaces);
 
-    void addContent(@NotNull Locale locale, @NotNull M content);
+    void addContent(@NotNull L locale, @NotNull M content);
 }

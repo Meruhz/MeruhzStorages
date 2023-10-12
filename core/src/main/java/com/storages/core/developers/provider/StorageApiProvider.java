@@ -10,30 +10,30 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class StorageApiProvider<M> implements StorageApi<M> {
+public abstract class StorageApiProvider<M, L> implements StorageApi<M, L> {
 
-    private final @NotNull Serializer<Storage<M>> serializer;
-    private final @NotNull Set<@NotNull Storage<M>> storages;
+    private final @NotNull Serializer<Storage<M, L>> serializer;
+    private final @NotNull Set<@NotNull Storage<M, L>> storages;
 
     protected boolean loaded;
 
-    public StorageApiProvider(@NotNull Serializer<Storage<M>> serializer) {
+    public StorageApiProvider(@NotNull Serializer<Storage<M, L>> serializer) {
         this.serializer = serializer;
         this.storages = new LinkedHashSet<>();
     }
 
     @Override
-    public @NotNull Set<@NotNull Storage<M>> getStorages() {
+    public @NotNull Set<@NotNull Storage<M, L>> getStorages() {
         return this.storages;
     }
 
     @Override
-    public @NotNull Serializer<Storage<M>> getSerializer() {
+    public @NotNull Serializer<Storage<M, L>> getSerializer() {
         return this.serializer;
     }
 
     @Override
-    public @NotNull Optional<Storage<M>> getStorage(@NotNull String name) {
+    public @NotNull Optional<Storage<M, L>> getStorage(@NotNull String name) {
         return StorageApi.super.getStorage(name);
     }
 
@@ -48,7 +48,7 @@ public abstract class StorageApiProvider<M> implements StorageApi<M> {
             throw new IllegalStateException("MeruhzStorages API is not loaded");
         }
 
-        for(Storage<M> storage : this.getStorages()) {
+        for(Storage<M, L> storage : this.getStorages()) {
 
             try {
                 storage.save();

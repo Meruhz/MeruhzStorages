@@ -3,24 +3,22 @@ package com.storages.core.data.providers;
 import com.storages.core.StoragesCore;
 import com.storages.core.data.Message;
 import com.storages.core.data.Storage;
-import com.storages.core.utils.LocaleUtils;
 import com.storages.core.utils.configuration.JsonConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashSet;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class StorageProvider<M> implements Storage<M> {
+public abstract class AbstractStorage<M, L> implements Storage<M, L> {
 
     private final @NotNull String name;
-    private final @NotNull Locale defaultLocale;
-    private final @NotNull Set<@NotNull Message<M>> messages;
+    private final @NotNull L defaultLocale;
+    private final @NotNull Set<@NotNull Message<M, L>> messages;
 
     private @NotNull JsonConfiguration jsonContent;
 
-    public StorageProvider(@NotNull String name, @NotNull Locale defaultLocale) {
+    public AbstractStorage(@NotNull String name, @NotNull L defaultLocale) {
         this.name = name;
         this.defaultLocale = defaultLocale;
         this.messages = new LinkedHashSet<>();
@@ -41,32 +39,32 @@ public abstract class StorageProvider<M> implements Storage<M> {
     }
 
     @Override
-    public @NotNull Locale getDefaultLocale() {
+    public @NotNull L getDefaultLocale() {
         return this.defaultLocale;
     }
 
     @Override
-    public @NotNull Set<@NotNull Message<M>> getMessages() {
+    public @NotNull Set<@NotNull Message<M, L>> getMessages() {
         return this.messages;
     }
 
     @Override
-    public @NotNull Optional<Message<M>> getMessage(@NotNull String id) {
+    public @NotNull Optional<Message<M, L>> getMessage(@NotNull String id) {
         return Storage.super.getMessage(id);
     }
 
     @Override
-    public @NotNull M getText(@NotNull Locale locale, @NotNull String id, @NotNull Object... replaces) {
-        @NotNull Optional<Message<M>> optionalMessage = this.getMessage(id);
+    public @NotNull M getText(@NotNull L locale, @NotNull String id, @NotNull Object... replaces) {
+        @NotNull Optional<Message<M, L>> optionalMessage = this.getMessage(id);
 
         if(!optionalMessage.isPresent()) {
             throw new NullPointerException("Could not be found a message with id '" + id + "' at storage '" + this.getName() + "'");
         }
 
-        @NotNull MessageProvider<M> message = (MessageProvider<M>) optionalMessage.get();
+        @NotNull AbstractMessage<M, L> message = (AbstractMessage<M, L>) optionalMessage.get();
 
         if(!message.getContents().containsKey(locale)) {
-            throw new NullPointerException("Could not be found locale '" + LocaleUtils.toString(locale) + "' from message '" + id + "' at storage '" + this.getName() + "'");
+            throw new NullPointerException("Could not be found the specified locale from message '" + id + "' at storage '" + this.getName() + "'");
         }
 
         return message.replace(locale, replaces);
@@ -77,7 +75,7 @@ public abstract class StorageProvider<M> implements Storage<M> {
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
 
-        StorageProvider<?> that = (StorageProvider<?>) o;
+        AbstractStorage<?, ?> that = (AbstractStorage<?, ?>) o;
 
         return name.equals(that.name);
     }
