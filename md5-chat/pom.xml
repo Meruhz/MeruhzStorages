@@ -94,6 +94,7 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- LvMultiplesLanguages API -->
         <dependency>
             <groupId>codes.laivy</groupId>
             <artifactId>lvml</artifactId>

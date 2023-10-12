@@ -9,14 +9,14 @@
 1. 🔗 **Download the latest JAR file from the release section of this repository;**
 2. 📦 **Add the downloaded JAR file to your project. It's easy! Simply put the JAR file to your project source and execute this on Maven Goal:**
 
-```mvn install:install-file -Dfile=MeruhzStorages.jar -DgroupId=com.storages -DartifactId=main -Dversion=1.0-SNAPSHOT -Dpackaging=jar clean```
+```mvn install:install-file -Dfile=MeruhzStorages.jar -DgroupId=codes.meruhz -DartifactId=storages -Dversion=1.0-SNAPSHOT -Dpackaging=jar clean```
 
   **Then add this on your pom.xml:**
   
 ```html
 <dependency>
-    <groupId>com.storages</groupId>
-    <artifactId>main</artifactId>
+    <groupId>codes.meruhz</groupId>
+    <artifactId>storages</artifactId>
     <version>1.0-SNAPSHOT</version>
     <scope>compile</scope>
 </dependency>
@@ -60,15 +60,11 @@
 **But if you want to create a message storage in a more complicated way, you can do this:**
 
 ```java
-@NotNull Locale enUsLocale = new Locale("en", "US");
-@NotNull Locale ptBrLocale = new Locale("pt", "BR");
-// More locales if you want
-
-@NotNull BaseComponentStorage storage = BaseComponentStorages.storages().getBaseComponentStorageApi().createStorage("Storage test", enUsLocale);
+@NotNull BaseComponentStorage storage = BaseComponentStorages.storages().getBaseComponentStorageApi().createStorage("Storage test", Locale.EN_US);
 
 @NotNull BaseComponentMessage message = BaseComponentStorages.storages().getBaseComponentStorageApi().createMessage(storage, "message.test");
-message.addContent(enUsLocale, new BaseComponent[] { new TextComponent("Here is the message content") });
-message.addContent(ptBrLocale, new BaseComponent[] { new TextComponent("Aqui é o conteúdo da mensagem") });
+message.addContent(Locale.EN_US, new BaseComponent[] { new TextComponent("Here is the message content") });
+message.addContent(Locale.PT_BR, new BaseComponent[] { new TextComponent("Aqui é o conteúdo da mensagem") });
 
 storage.getMessages().add(message);
 
@@ -84,14 +80,14 @@ storage.save() // You can use this when want to save the storage on the folder
 1. **Implements the base interface:**
 
 ```java
-public class CustomStorage implements Storage<String> {
+public class CustomStorage implements Storage<String, Locale> {
     
     // Implements all methods and all main logic
 }
 ```
 
 ```java
-public class CustomMessage implements Message<String> {
+public class CustomMessage implements Message<String, Locale> {
     
     // Implements all methods and all main logic
 }
@@ -100,14 +96,14 @@ public class CustomMessage implements Message<String> {
 2. **Extend the abstract class that implements this interface:**
 
 ```java
-public class CustomStorage extends StorageProvider<String> {
+public class CustomStorage extends AbstractStorage<String, Locale> {
     
     // Override only essentials methods
 }
 ```
 
 ```java
-public class CustomMessage extends MessageProvider<String> {
+public class CustomMessage extends AbstractMessage<String, Locale> {
     
     // Override only essentials methods
 }
