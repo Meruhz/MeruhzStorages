@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-public class AbstractStorage<M, L> implements Storage<M, L> {
+public abstract class AbstractStorage<M, L> implements Storage<M, L> {
 
     private final @NotNull String name;
     private final @NotNull L defaultLocale;
@@ -26,7 +26,7 @@ public class AbstractStorage<M, L> implements Storage<M, L> {
 
     private @NotNull JsonConfiguration jsonContent;
 
-    protected boolean loaded;
+    private boolean loaded;
 
     public AbstractStorage(@NotNull String name, @NotNull L defaultLocale) {
         this.name = name;
@@ -101,6 +101,7 @@ public class AbstractStorage<M, L> implements Storage<M, L> {
                 }
 
                 StoragesCore.getCore().getStorageSerializer().deserialize(JsonParser.parseString(AbstractConfiguration.getFileContent(optionalPath.get().toFile())));
+                this.loaded = true;
 
             } catch (IOException e) {
                 StoragesCore.getLogger().severe("Failed to load storage '" + this.getName() + "'");
@@ -117,14 +118,15 @@ public class AbstractStorage<M, L> implements Storage<M, L> {
 
         return CompletableFuture.runAsync(() -> {
             try {
-                this.getJsonContent().setConfiguration(StoragesCore.getCore().getStorageSerializer().serialize(this), true);
-                this.loaded = true;
+                this.save();
+                this.loaded = false;
 
             } catch (Throwable throwable) {
                 StoragesCore.getLogger().severe("Failed to unload storage '" + this.getName() + "'");
                 throw new RuntimeException(throwable);
             }
-
         });
     }
+
+    public abstract void save();
 }

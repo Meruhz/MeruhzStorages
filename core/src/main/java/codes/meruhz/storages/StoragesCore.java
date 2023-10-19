@@ -10,13 +10,13 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-public class StoragesCore {
+public class StoragesCore<M, L> {
 
     private static final @NotNull Logger LOGGER = Logger.getLogger("MeruhzStorages");
 
-    private static @NotNull StoragesCore INSTANCE = new StoragesCore();
+    private static @NotNull StoragesCore<?, ?> INSTANCE = new StoragesCore<>();
 
-    private @Nullable Serializer<Storage<?, ?>> serializer;
+    private @Nullable Serializer<Storage<M, L>> serializer;
 
     private @NotNull File storagesDirectory;
 
@@ -32,19 +32,19 @@ public class StoragesCore {
         this.storagesDirectory = storagesDirectory;
     }
 
-    public @NotNull Serializer<Storage<?, ?>> getStorageSerializer() {
+    public @NotNull Serializer<Storage<M, L>> getStorageSerializer() {
         return Optional.ofNullable(this.serializer).orElseThrow(() -> new NullPointerException("Storage serializer is not initialized"));
     }
 
-    public void setStorageSerializer(@NotNull Serializer<Storage<?, ?>> storageSerializer) {
+    public void setStorageSerializer(@NotNull Serializer<Storage<M, L>> storageSerializer) {
         this.serializer = storageSerializer;
     }
 
-    public static @NotNull StoragesCore getCore() {
+    public static @NotNull StoragesCore<?, ?> getCore() {
         return StoragesCore.INSTANCE;
     }
 
-    public static void setCore(@NotNull StoragesCore instance) {
+    public static void setCore(@NotNull StoragesCore<?, ?> instance) {
         StoragesCore.INSTANCE = instance;
     }
 
