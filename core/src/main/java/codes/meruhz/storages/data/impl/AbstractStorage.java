@@ -4,7 +4,7 @@ import codes.meruhz.storages.StoragesCore;
 import codes.meruhz.storages.data.Message;
 import codes.meruhz.storages.data.Storage;
 import codes.meruhz.storages.utils.configuration.AbstractConfiguration;
-import codes.meruhz.storages.utils.configuration.JsonConfiguration;
+import codes.meruhz.storages.utils.configuration.providers.JsonConfiguration;
 import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
 
