@@ -3,20 +3,12 @@ package codes.meruhz.storages.data.impl;
 import codes.meruhz.storages.StoragesCore;
 import codes.meruhz.storages.data.Message;
 import codes.meruhz.storages.data.Storage;
-import codes.meruhz.storages.utils.configuration.AbstractConfiguration;
 import codes.meruhz.storages.utils.configuration.providers.JsonConfiguration;
-import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 public abstract class AbstractStorage<M, L> implements Storage<M, L> {
 
@@ -26,7 +18,7 @@ public abstract class AbstractStorage<M, L> implements Storage<M, L> {
 
     private @NotNull JsonConfiguration jsonContent;
 
-    private boolean loaded;
+    protected boolean loaded;
 
     public AbstractStorage(@NotNull String name, @NotNull L defaultLocale) {
         this.name = name;
@@ -79,54 +71,4 @@ public abstract class AbstractStorage<M, L> implements Storage<M, L> {
     public boolean isLoaded() {
         return this.loaded;
     }
-
-    @Override
-    public @NotNull CompletableFuture<Void> load() {
-        if(this.isLoaded()) {
-            throw new IllegalStateException("Storage '" + this.getName() + "' already is loaded");
-        }
-
-        return CompletableFuture.runAsync(() -> {
-            @NotNull File directory = StoragesCore.getCore().getStoragesDirectory();
-
-            if(!directory.isDirectory() && !directory.mkdirs()) {
-                throw new RuntimeException("Directory '" + directory.getAbsolutePath() + "' could not be created");
-            }
-
-            try(Stream<Path> stream = Files.list(directory.toPath()).filter(path -> path.getFileName().toString().equals(this.getJsonContent().getName()))) {
-                @NotNull Optional<Path> optionalPath = stream.findFirst();
-
-                if(!optionalPath.isPresent()) {
-                    throw new NullPointerException("Storage '" + this.getJsonContent().getName() + "' on directory '" + directory.getAbsolutePath() + "'");
-                }
-
-                StoragesCore.getCore().getStorageSerializer().deserialize(JsonParser.parseString(AbstractConfiguration.getFileContent(optionalPath.get().toFile())));
-                this.loaded = true;
-
-            } catch (IOException e) {
-                StoragesCore.getLogger().severe("Failed to load storage '" + this.getName() + "'");
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    @Override
-    public @NotNull CompletableFuture<Void> unload() {
-        if(!this.isLoaded()) {
-            throw new IllegalStateException("Storage '" + this.getName() + "' is not loaded");
-        }
-
-        return CompletableFuture.runAsync(() -> {
-            try {
-                this.save();
-                this.loaded = false;
-
-            } catch (Throwable throwable) {
-                StoragesCore.getLogger().severe("Failed to unload storage '" + this.getName() + "'");
-                throw new RuntimeException(throwable);
-            }
-        });
-    }
-
-    public abstract void save();
 }

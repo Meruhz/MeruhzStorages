@@ -65,9 +65,11 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
                 storage.getMessages().add(message);
             }
 
+            storage.load();
             return storage;
 
         } catch (Throwable throwable) {
+            System.out.println("cccccc");
             throw new RuntimeException("An error occurred while deserializing base component storage json: " + element, throwable);
         }
     }

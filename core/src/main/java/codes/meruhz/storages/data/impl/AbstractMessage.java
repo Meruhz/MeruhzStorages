@@ -15,6 +15,10 @@ public abstract class AbstractMessage<M, L> implements Message<M, L> {
     private final @NotNull String id;
 
     public AbstractMessage(@NotNull Storage<M, L> storage, @NotNull String id) {
+        if(storage.getMessage(id).isPresent()) {
+            throw new IllegalArgumentException("Message '" + id + "' already exists at storage '" + storage.getName() + "'");
+        }
+
         this.storage = storage;
         this.id = id;
     }

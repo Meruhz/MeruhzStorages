@@ -8,11 +8,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 public class StoragesCore<M, L> {
-
-    private static final @NotNull Logger LOGGER = Logger.getLogger("MeruhzStorages");
 
     private static @NotNull StoragesCore<?, ?> INSTANCE = new StoragesCore<>();
 
@@ -21,7 +18,7 @@ public class StoragesCore<M, L> {
     private @NotNull File storagesDirectory;
 
     public StoragesCore() {
-        this.storagesDirectory = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages");
+        this.storagesDirectory = new File(Paths.get(System.getProperty("user.dir")).toAbsolutePath() + File.separator + "storages" + File.separator);
     }
 
     public @NotNull File getStoragesDirectory() {
@@ -32,11 +29,11 @@ public class StoragesCore<M, L> {
         this.storagesDirectory = storagesDirectory;
     }
 
-    public @NotNull Serializer<Storage<M, L>> getStorageSerializer() {
+    protected @NotNull Serializer<Storage<M, L>> getStorageSerializer() {
         return Optional.ofNullable(this.serializer).orElseThrow(() -> new NullPointerException("Storage serializer is not initialized"));
     }
 
-    public void setStorageSerializer(@NotNull Serializer<Storage<M, L>> storageSerializer) {
+    protected void setStorageSerializer(@NotNull Serializer<Storage<M, L>> storageSerializer) {
         this.serializer = storageSerializer;
     }
 
@@ -46,10 +43,6 @@ public class StoragesCore<M, L> {
 
     public static void setCore(@NotNull StoragesCore<?, ?> instance) {
         StoragesCore.INSTANCE = instance;
-    }
-
-    public static @NotNull Logger getLogger() {
-        return StoragesCore.LOGGER;
     }
 
     public static void main(String[] args) {
