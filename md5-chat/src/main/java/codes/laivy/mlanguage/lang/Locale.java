@@ -1,6 +1,6 @@
 package codes.laivy.mlanguage.lang;
 
-import codes.meruhz.storages.utils.LocaleUtils;
+import codes.meruhz.storages.core.utils.LocaleUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

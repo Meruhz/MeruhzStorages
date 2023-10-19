@@ -1,4 +1,4 @@
-package codes.meruhz.storages.utils.configuration;
+package codes.meruhz.storages.core.utils.configuration;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;

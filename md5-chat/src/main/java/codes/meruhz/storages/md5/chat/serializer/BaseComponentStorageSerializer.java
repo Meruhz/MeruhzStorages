@@ -1,11 +1,12 @@
-package codes.meruhz.storages.serializer;
+package codes.meruhz.storages.md5.chat.serializer;
 
 import codes.laivy.mlanguage.lang.Locale;
-import codes.meruhz.storages.data.BaseComponentMessage;
-import codes.meruhz.storages.data.BaseComponentStorage;
-import codes.meruhz.storages.data.Message;
-import codes.meruhz.storages.data.Storage;
-import codes.meruhz.storages.utils.ComponentUtils;
+import codes.meruhz.storages.core.data.Message;
+import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.core.serializer.Serializer;
+import codes.meruhz.storages.md5.chat.data.BaseComponentMessage;
+import codes.meruhz.storages.md5.chat.data.BaseComponentStorage;
+import codes.meruhz.storages.md5.chat.utils.ComponentUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.md_5.bungee.api.chat.BaseComponent;

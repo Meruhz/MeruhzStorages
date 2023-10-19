@@ -1,6 +1,5 @@
-package codes.meruhz.storages.utils.configuration.providers;
+package codes.meruhz.storages.core.utils.configuration;
 
-import codes.meruhz.storages.utils.configuration.AbstractConfiguration;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

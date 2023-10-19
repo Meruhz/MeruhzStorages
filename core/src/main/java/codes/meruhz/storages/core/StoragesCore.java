@@ -1,7 +1,7 @@
-package codes.meruhz.storages;
+package codes.meruhz.storages.core;
 
-import codes.meruhz.storages.data.Storage;
-import codes.meruhz.storages.serializer.Serializer;
+import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.core.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

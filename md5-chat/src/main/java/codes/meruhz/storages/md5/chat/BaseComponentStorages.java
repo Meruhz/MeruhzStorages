@@ -1,9 +1,10 @@
-package codes.meruhz.storages;
+package codes.meruhz.storages.md5.chat;
 
 import codes.laivy.mlanguage.lang.Locale;
-import codes.meruhz.storages.data.Storage;
-import codes.meruhz.storages.serializer.BaseComponentStorageSerializer;
-import codes.meruhz.storages.serializer.Serializer;
+import codes.meruhz.storages.core.StoragesCore;
+import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.core.serializer.Serializer;
+import codes.meruhz.storages.md5.chat.serializer.BaseComponentStorageSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 

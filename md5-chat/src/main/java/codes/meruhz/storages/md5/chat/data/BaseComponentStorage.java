@@ -1,10 +1,10 @@
-package codes.meruhz.storages.data;
+package codes.meruhz.storages.md5.chat.data;
 
 import codes.laivy.mlanguage.lang.Locale;
-import codes.meruhz.storages.BaseComponentStorages;
-import codes.meruhz.storages.StoragesCore;
-import codes.meruhz.storages.data.impl.AbstractStorage;
-import codes.meruhz.storages.utils.configuration.AbstractConfiguration;
+import codes.meruhz.storages.core.StoragesCore;
+import codes.meruhz.storages.core.data.impl.AbstractStorage;
+import codes.meruhz.storages.core.utils.configuration.AbstractConfiguration;
+import codes.meruhz.storages.md5.chat.BaseComponentStorages;
 import com.google.gson.JsonParser;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;

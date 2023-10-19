@@ -1,6 +1,6 @@
-package codes.meruhz.storages.data;
+package codes.meruhz.storages.core.data;
 
-import codes.meruhz.storages.utils.Loader;
+import codes.meruhz.storages.core.utils.Loader;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

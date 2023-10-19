@@ -1,9 +1,9 @@
-package codes.meruhz.storages.data.impl;
+package codes.meruhz.storages.core.data.impl;
 
-import codes.meruhz.storages.StoragesCore;
-import codes.meruhz.storages.data.Message;
-import codes.meruhz.storages.data.Storage;
-import codes.meruhz.storages.utils.configuration.providers.JsonConfiguration;
+import codes.meruhz.storages.core.StoragesCore;
+import codes.meruhz.storages.core.data.Message;
+import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.core.utils.configuration.JsonConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashSet;

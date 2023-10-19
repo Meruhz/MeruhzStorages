@@ -1,4 +1,4 @@
-package codes.meruhz.storages.serializer;
+package codes.meruhz.storages.core.serializer;
 
 import com.google.gson.JsonElement;
 import org.jetbrains.annotations.NotNull;

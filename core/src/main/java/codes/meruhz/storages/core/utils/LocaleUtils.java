@@ -1,4 +1,4 @@
-package codes.meruhz.storages.utils;
+package codes.meruhz.storages.core.utils;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package codes.meruhz.storages.utils;
+package codes.meruhz.storages.md5.chat.utils;
 
 import com.google.gson.*;
 import net.md_5.bungee.api.chat.BaseComponent;
