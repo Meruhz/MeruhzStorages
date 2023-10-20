@@ -1,17 +1,16 @@
-package codes.meruhz.storages.md5.chat.data;
+package codes.meruhz.storages.string.data;
 
-import codes.laivy.mlanguage.lang.Locale;
 import codes.meruhz.storages.core.data.impl.AbstractStorage;
-import codes.meruhz.storages.md5.chat.BaseComponentStorages;
-import net.md_5.bungee.api.chat.BaseComponent;
+import codes.meruhz.storages.string.StringStorages;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public class BaseComponentStorage extends AbstractStorage<BaseComponent[], Locale> {
+public class StringStorage extends AbstractStorage<String, Locale> {
 
-    public BaseComponentStorage(@NotNull String name, @NotNull Locale defaultLocale, boolean autoLoad) {
+    public StringStorage(@NotNull String name, @NotNull Locale defaultLocale, boolean autoLoad) {
         super(name, defaultLocale);
 
         if(autoLoad) {
@@ -30,7 +29,7 @@ public class BaseComponentStorage extends AbstractStorage<BaseComponent[], Local
         CompletableFuture.runAsync(() -> {
 
             try {
-                super.getJsonContent().setConfiguration(BaseComponentStorages.getInstance().getStorageSerializer().serialize(this), true);
+                super.getJsonContent().setConfiguration(StringStorages.getInstance().getStorageSerializer().serialize(this), true);
                 completableFuture.complete(null);
                 super.loaded = false;
 

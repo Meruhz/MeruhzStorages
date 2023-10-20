@@ -18,6 +18,7 @@
     <modules>
         <module>core</module>
         <module>md5-chat</module>
+        <module>string</module>
     </modules>
 
     <dependencies>

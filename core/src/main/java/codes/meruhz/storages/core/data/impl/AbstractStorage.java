@@ -3,12 +3,21 @@ package codes.meruhz.storages.core.data.impl;
 import codes.meruhz.storages.core.StoragesCore;
 import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
+import codes.meruhz.storages.core.utils.configuration.AbstractConfiguration;
 import codes.meruhz.storages.core.utils.configuration.JsonConfiguration;
+import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public abstract class AbstractStorage<M, L> implements Storage<M, L> {
 
@@ -70,5 +79,38 @@ public abstract class AbstractStorage<M, L> implements Storage<M, L> {
     @Override
     public boolean isLoaded() {
         return this.loaded;
+    }
+
+    @Override
+    public @NotNull CompletableFuture<Void> load() {
+        if(this.isLoaded()) {
+            throw new IllegalStateException("Storage '" + this.getName() + "' already is loaded");
+        }
+
+        @NotNull CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        CompletableFuture.runAsync(() -> {
+            @NotNull File directory = StoragesCore.getCore().getStoragesDirectory();
+
+            if(!directory.isDirectory() && !directory.mkdirs()) {
+                throw new RuntimeException("Directory '" + directory.getAbsolutePath() + "' could not be created");
+            }
+
+            try (Stream<Path> stream = Files.list(directory.toPath()).filter(path -> path.getFileName().toString().equals(this.getJsonContent().getName()))) {
+                @NotNull Optional<Path> optionalPath = stream.findFirst();
+
+                if(optionalPath.isPresent() && Files.exists(optionalPath.get())) {
+                    this.getJsonContent().setConfiguration(JsonParser.parseString(AbstractConfiguration.getFileContent(optionalPath.get().toFile())), true);
+                }
+
+                completableFuture.complete(null);
+                this.loaded = true;
+
+            } catch (IOException e) {
+                completableFuture.completeExceptionally(e);
+            }
+        });
+
+        return completableFuture.orTimeout(5, TimeUnit.SECONDS);
     }
 }
