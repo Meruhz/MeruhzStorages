@@ -50,7 +50,7 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
             @NotNull Locale defaultLocale = Locale.valueOf(json.get("default locale").getAsString());
 
             @NotNull JsonObject messagesJson = json.getAsJsonObject("messages");
-            @NotNull BaseComponentStorage storage = new BaseComponentStorage(name, defaultLocale, false);
+            @NotNull BaseComponentStorage storage = new BaseComponentStorage(name, defaultLocale);
 
             for(Map.Entry<String, JsonElement> messageEntry : messagesJson.entrySet()) {
                 @NotNull String messageId = messageEntry.getKey();
@@ -66,7 +66,7 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
                 storage.getMessages().add(message);
             }
 
-            storage.load();
+            storage.start();
             return storage;
 
         } catch (Throwable throwable) {

@@ -1,12 +1,11 @@
 package codes.meruhz.storages.core.data;
 
-import codes.meruhz.storages.core.utils.Loader;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.Set;
 
-public interface Storage<M, L> extends Loader {
+public interface Storage<M, L> {
 
     @NotNull String getName();
 

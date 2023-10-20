@@ -48,7 +48,7 @@ public class StringStorageSerializer implements Serializer<Storage<String, Local
             @NotNull Locale defaultLocale = LocaleUtils.toLocale(json.get("default locale").getAsString());
 
             @NotNull JsonObject messagesJson = json.getAsJsonObject("messages");
-            @NotNull StringStorage storage = new StringStorage(name, defaultLocale, false);
+            @NotNull StringStorage storage = new StringStorage(name, defaultLocale);
 
             for(Map.Entry<String, JsonElement> messageEntry : messagesJson.entrySet()) {
                 @NotNull String messageId = messageEntry.getKey();
@@ -64,7 +64,7 @@ public class StringStorageSerializer implements Serializer<Storage<String, Local
                 storage.getMessages().add(message);
             }
 
-            storage.load();
+            storage.start();
             return storage;
 
         } catch (Throwable throwable) {

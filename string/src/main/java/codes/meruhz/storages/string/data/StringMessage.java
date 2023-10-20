@@ -1,6 +1,5 @@
 package codes.meruhz.storages.string.data;
 
-import codes.meruhz.storages.core.data.Storage;
 import codes.meruhz.storages.core.data.impl.AbstractMessage;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,7 +7,7 @@ import java.util.Locale;
 
 public class StringMessage extends AbstractMessage<String, Locale> {
 
-    public StringMessage(@NotNull Storage<String, Locale> storage, @NotNull String id) {
+    public StringMessage(@NotNull StringStorage storage, @NotNull String id) {
         super(storage, id);
     }
 
