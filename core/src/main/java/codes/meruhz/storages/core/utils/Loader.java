@@ -14,18 +14,18 @@ public abstract class Loader {
     private volatile boolean loaded = false;
 
     @Blocking
-    public final void start() throws Throwable {
+    public final void load() throws Throwable {
         if(this.isLoaded()) {
             throw new IllegalStateException("Unable to start when it's already started");
         }
 
-        this.load().get(this.getTimeout().toMillis(), TimeUnit.MICROSECONDS);
+        this.start().get(this.getTimeout().toMillis(), TimeUnit.MICROSECONDS);
         this.loaded = true;
     }
 
     @Blocking
-    public final void stop() throws Throwable {
-        this.unload().get(this.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
+    public final void unload() throws Throwable {
+        this.stop().get(this.getTimeout().toMillis(), TimeUnit.MILLISECONDS);
         this.loaded = false;
     }
 
@@ -38,8 +38,8 @@ public abstract class Loader {
     }
 
     @ApiStatus.OverrideOnly
-    protected abstract @NotNull CompletableFuture<Void> load() throws Throwable;
+    protected abstract @NotNull CompletableFuture<Void> start() throws Throwable;
 
     @ApiStatus.OverrideOnly
-    protected abstract @NotNull CompletableFuture<Void> unload() throws Throwable;
+    protected abstract @NotNull CompletableFuture<Void> stop() throws Throwable;
 }

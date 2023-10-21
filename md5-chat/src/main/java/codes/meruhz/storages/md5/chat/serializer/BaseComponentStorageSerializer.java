@@ -66,7 +66,7 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
                 storage.getMessages().add(message);
             }
 
-            storage.start();
+            storage.load();
             return storage;
 
         } catch (Throwable throwable) {

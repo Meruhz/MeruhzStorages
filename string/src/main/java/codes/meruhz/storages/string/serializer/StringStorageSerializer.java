@@ -64,7 +64,7 @@ public class StringStorageSerializer implements Serializer<Storage<String, Local
                 storage.getMessages().add(message);
             }
 
-            storage.start();
+            storage.load();
             return storage;
 
         } catch (Throwable throwable) {

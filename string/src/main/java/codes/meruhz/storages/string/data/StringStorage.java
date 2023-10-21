@@ -17,7 +17,7 @@ public class StringStorage extends AbstractStorage<String, Locale> {
     }
 
     @Override
-    protected @NotNull CompletableFuture<Void> unload() {
+    protected @NotNull CompletableFuture<Void> stop() {
         @NotNull CompletableFuture<Void> completableFuture = new CompletableFuture<>();
 
         CompletableFuture.runAsync(() -> {

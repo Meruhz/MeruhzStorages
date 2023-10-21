@@ -73,7 +73,7 @@ public abstract class AbstractStorage<M, L> extends Loader implements Storage<M,
     }
 
     @Override
-    protected @NotNull CompletableFuture<Void> load() {
+    protected @NotNull CompletableFuture<Void> start() {
         @NotNull CompletableFuture<Void> completableFuture = new CompletableFuture<>();
 
         CompletableFuture.runAsync(() -> {
