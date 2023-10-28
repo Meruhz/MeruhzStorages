@@ -2,6 +2,7 @@ package codes.meruhz.storages.core.data;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,4 +19,6 @@ public interface Storage<M, L> {
     }
 
     @NotNull M getText(@NotNull L locale, @NotNull String id, @NotNull Object... replaces);
+
+    @NotNull List<M> getArrayText(@NotNull L locale, @NotNull String id, @NotNull Object... replaces);
 }

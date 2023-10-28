@@ -24,7 +24,7 @@ Then add this to your pom.xml:
 Take a look at how easy it is to create a BaseComponent message storage with this module:
 ```json
 {
-  "name": "Storage test",
+  "name": "Storage_model.json test",
   "default locale": "EN_US",
   "messages": {
     "legacy.message": {
@@ -56,8 +56,8 @@ But if you want to create a BaseComponent message storage by a more complicated 
 @NotNull BaseComponentStorage storage = new BaseComponentStorage("Storage test", Locale.EN_US);
 
 @NotNull BaseComponentMessage message = new BaseComponentMessage(storage, "message.test");
-message.addContent(Locale.EN_US, "Contribute with this project :)");
-message.addContent(Locale.PT_BR, "Contribua com este projeto :)");
+message.addContent(Locale.EN_US, new BaseComponent[] { new TextComponent("Contribute with this project :)")});
+message.addContent(Locale.PT_BR, new BaseComponent[] { new TextComponent("Contribua com este projeto :)")});
  
 storage.load();
  

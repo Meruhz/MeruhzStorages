@@ -5,10 +5,13 @@ import codes.meruhz.storages.core.data.Storage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractMessage<M, L> implements Message<M, L> {
 
+    private final @NotNull Map<@NotNull L, @NotNull List<M>> arrayContents = new LinkedHashMap<>();
     private final @NotNull Map<@NotNull L, @NotNull M> contents = new LinkedHashMap<>();
 
     private final @NotNull Storage<M, L> storage;
@@ -21,6 +24,10 @@ public abstract class AbstractMessage<M, L> implements Message<M, L> {
 
         this.storage = storage;
         this.id = id;
+    }
+
+    public @NotNull Map<@NotNull L, @NotNull List<M>> getArrayContents() {
+        return this.arrayContents;
     }
 
     public @NotNull Map<@NotNull L, @NotNull M> getContents() {
@@ -47,9 +54,40 @@ public abstract class AbstractMessage<M, L> implements Message<M, L> {
                 return this.getContents().get(this.getStorage().getDefaultLocale());
 
             } catch (NullPointerException e) {
-                throw new RuntimeException("Could not find the specified locale and the default locale '" + this.getStorage().getDefaultLocale() + "' for message '" + this.getId() + "'");
+                throw new RuntimeException("Could not find the specified locale '" + locale + "' and the default locale '" + this.getStorage().getDefaultLocale() + "' for message '" + this.getId() + "' at storage '" + this.getStorage().getName() + "'");
             }
         }
+    }
+
+    @Override
+    public boolean isArrayText(@NotNull L locale) {
+        return this.getArrayContents().containsKey(locale);
+    }
+
+    @Override
+    public @NotNull List<M> getArrayText(@NotNull L locale) {
+        if(!this.isArrayText(locale)) {
+            throw new IllegalStateException("Message '" + this.getId() + "' from locale '" + locale + "' is not an array text");
+        }
+
+        try {
+            return this.getArrayContents().get(locale);
+
+        } catch (NullPointerException ex) {
+
+            try {
+                return this.getArrayContents().get(this.getStorage().getDefaultLocale());
+
+            } catch (NullPointerException e) {
+                throw new RuntimeException("Could not find the specified locale '" + locale + "' and the default locale '" + this.getStorage().getDefaultLocale() + "' for message '" + this.getId() + "' at storage '" + this.getStorage().getName() + "'");
+            }
+        }
+    }
+
+    @Override
+    public void addArrayContent(@NotNull L locale, @NotNull List<M> content) {
+        this.getArrayContents().computeIfAbsent(locale, key -> new LinkedList<>(content));
+        this.getStorage().getMessages().add(this);
     }
 
     @Override

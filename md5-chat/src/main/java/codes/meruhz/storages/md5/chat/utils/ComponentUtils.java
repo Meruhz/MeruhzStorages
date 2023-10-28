@@ -6,6 +6,10 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public final class ComponentUtils {
 
     private ComponentUtils() {
@@ -54,6 +58,20 @@ public final class ComponentUtils {
         }
 
         return str.toString().startsWith("§f") ? str.toString().replaceFirst("§f", "") : str.toString();
+    }
+
+    public static @NotNull List<String> getArrayText(@NotNull List<@NotNull BaseComponent @NotNull []> components) {
+        return components.stream().flatMap(Arrays::stream).map(ComponentUtils::getText).collect(Collectors.toList());
+    }
+
+    public static @NotNull BaseComponent @NotNull [] replace(@NotNull BaseComponent @NotNull [] components, @NotNull Object @NotNull [] replaces) {
+        @NotNull String serialized = ComponentUtils.serialize(components);
+
+        for(Object replace : replaces) {
+            serialized = serialized.replaceFirst("%s", replace.toString());
+        }
+
+        return ComponentSerializer.parse(serialized);
     }
 
     public static boolean isLegacyText(@NotNull BaseComponent... components) {

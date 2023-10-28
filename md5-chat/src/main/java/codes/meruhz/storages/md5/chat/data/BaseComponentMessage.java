@@ -4,8 +4,10 @@ import codes.laivy.mlanguage.lang.Locale;
 import codes.meruhz.storages.core.data.impl.AbstractMessage;
 import codes.meruhz.storages.md5.chat.utils.ComponentUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BaseComponentMessage extends AbstractMessage<BaseComponent[], Locale> {
 
@@ -14,22 +16,20 @@ public class BaseComponentMessage extends AbstractMessage<BaseComponent[], Local
     }
 
     @Override
-    public @NotNull Locale @NotNull [] getLocales() {
-        return super.getContents().keySet().toArray(new Locale[0]);
+    public @NotNull BaseComponent @NotNull [] replace(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
+        return ComponentUtils.replace(super.getText(locale), replaces);
     }
 
     @Override
-    public @NotNull BaseComponent @NotNull [] replace(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
-        @NotNull String serialized = ComponentUtils.serialize(super.getText(locale));
-
-        for(Object replace : replaces) {
-            serialized = serialized.replaceFirst("%s", replace.toString());
-        }
-
-        return ComponentSerializer.parse(serialized);
+    public @NotNull List<@NotNull BaseComponent @NotNull []> replaceArray(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
+        return super.getArrayText(locale).stream().map(text -> ComponentUtils.replace(text, replaces)).collect(Collectors.toList());
     }
 
     public @NotNull String getLegacyText(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
         return ComponentUtils.getText(this.replace(locale, replaces));
+    }
+
+    public @NotNull List<String> getLegacyArray(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
+        return ComponentUtils.getArrayText(this.replaceArray(locale, replaces));
     }
 }

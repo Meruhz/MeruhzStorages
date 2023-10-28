@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -66,10 +67,27 @@ public abstract class AbstractStorage<M, L> extends Loader implements Storage<M,
         @NotNull AbstractMessage<M, L> message = (AbstractMessage<M, L>) optionalMessage.get();
 
         if(!message.getContents().containsKey(locale)) {
-            throw new NullPointerException("Could not be found the specified locale from message '" + id + "' at storage '" + this.getName() + "'");
+            throw new NullPointerException("Could not be found the locale '" + locale + "' from message '" + id + "' at storage '" + this.getName() + "'");
         }
 
         return message.replace(locale, replaces);
+    }
+
+    @Override
+    public @NotNull List<M> getArrayText(@NotNull L locale, @NotNull String id, @NotNull Object... replaces) {
+        @NotNull Optional<Message<M, L>> optionalMessage = this.getMessage(id);
+
+        if(!optionalMessage.isPresent()) {
+            throw new NullPointerException("Could not be found a message with id '" + id + "' at storage '" + this.getName() + "'");
+        }
+
+        @NotNull AbstractMessage<M, L> message = (AbstractMessage<M, L>) optionalMessage.get();
+
+        if(!message.getArrayContents().containsKey(locale)) {
+            throw new NullPointerException("Could not be found the locale '" + locale + "' from message '" + id + "' at storage '" + this.getName() + "'");
+        }
+
+        return message.replaceArray(locale, replaces);
     }
 
     @Override
