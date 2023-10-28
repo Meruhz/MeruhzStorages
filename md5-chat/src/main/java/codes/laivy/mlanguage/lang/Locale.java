@@ -1,6 +1,6 @@
 package codes.laivy.mlanguage.lang;
 
-import codes.meruhz.storages.core.utils.LocaleUtils;
+import codes.meruhz.storages.core.utils.MessageUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -162,6 +162,6 @@ public enum Locale {
 
     @Contract(pure = true)
     public static @NotNull Locale fromJavaLocale(@NotNull java.util.Locale javaLocale) {
-        return Locale.valueOf(LocaleUtils.toString(javaLocale));
+        return Locale.valueOf(MessageUtils.serializeLocale(javaLocale));
     }
 }

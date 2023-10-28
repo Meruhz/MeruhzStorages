@@ -1,7 +1,6 @@
 package codes.meruhz.storages.md5.chat.serializer;
 
 import codes.laivy.mlanguage.lang.Locale;
-import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
 import codes.meruhz.storages.core.serializer.Serializer;
 import codes.meruhz.storages.md5.chat.data.BaseComponentMessage;
@@ -26,7 +25,7 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
         json.addProperty("default locale", storage.getDefaultLocale().toString());
 
         @NotNull JsonObject messagesJson = new JsonObject();
-        for(Message<BaseComponent[], Locale> message : storage.getMessages()) {
+        storage.getMessages().forEach(message -> {
             @NotNull BaseComponentMessage baseComponentMessage = (BaseComponentMessage) message;
             @NotNull JsonObject messageJson = new JsonObject();
             @NotNull JsonObject contentJson = new JsonObject();
@@ -42,7 +41,7 @@ public class BaseComponentStorageSerializer implements Serializer<Storage<BaseCo
 
             messageJson.add("content", contentJson);
             messagesJson.add(message.getId(), messageJson);
-        }
+        });
 
         json.add("messages", messagesJson);
         return json;

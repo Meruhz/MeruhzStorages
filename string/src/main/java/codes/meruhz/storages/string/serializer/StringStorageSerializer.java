@@ -1,17 +1,18 @@
 package codes.meruhz.storages.string.serializer;
 
-import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
 import codes.meruhz.storages.core.serializer.Serializer;
-import codes.meruhz.storages.core.utils.LocaleUtils;
+import codes.meruhz.storages.core.utils.MessageUtils;
 import codes.meruhz.storages.string.data.StringMessage;
 import codes.meruhz.storages.string.data.StringStorage;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class StringStorageSerializer implements Serializer<Storage<String, Locale>> {
 
@@ -22,18 +23,23 @@ public class StringStorageSerializer implements Serializer<Storage<String, Local
         json.addProperty("default locale", storage.getDefaultLocale().toString());
 
         @NotNull JsonObject messagesJson = new JsonObject();
-        for(Message<String, Locale> message : storage.getMessages()) {
+        storage.getMessages().forEach(message -> {
             @NotNull StringMessage stringMessage = (StringMessage) message;
             @NotNull JsonObject messageJson = new JsonObject();
             @NotNull JsonObject contentJson = new JsonObject();
 
-            for(Map.Entry<Locale, String> entrySet : stringMessage.getContents().entrySet()) {
-                contentJson.addProperty(LocaleUtils.toString(entrySet.getKey()), entrySet.getValue());
-            }
+            stringMessage.getContents().forEach((locale, content) -> contentJson.addProperty(MessageUtils.serializeLocale(locale), content));
+
+            stringMessage.getArrayContents().forEach((locale, arrayContent) -> {
+                @NotNull JsonArray contentArray = new JsonArray();
+
+                arrayContent.forEach(contentArray::add);
+                contentJson.add(MessageUtils.serializeLocale(locale), contentArray);
+            });
 
             messageJson.add("content", contentJson);
             messagesJson.add(message.getId(), messageJson);
-        }
+        });
 
         json.add("messages", messagesJson);
         return json;
@@ -45,24 +51,35 @@ public class StringStorageSerializer implements Serializer<Storage<String, Local
             @NotNull JsonObject json = element.getAsJsonObject();
 
             @NotNull String name = json.get("name").getAsString();
-            @NotNull Locale defaultLocale = LocaleUtils.toLocale(json.get("default locale").getAsString());
+            @NotNull Locale defaultLocale = MessageUtils.deserializeLocale(json.get("default locale").getAsString());
 
             @NotNull JsonObject messagesJson = json.getAsJsonObject("messages");
             @NotNull StringStorage storage = new StringStorage(name, defaultLocale);
 
-            for(Map.Entry<String, JsonElement> messageEntry : messagesJson.entrySet()) {
-                @NotNull String messageId = messageEntry.getKey();
-                @NotNull JsonObject messageJson = messageEntry.getValue().getAsJsonObject();
+            messagesJson.asMap().forEach((id, messageElement) -> {
+                @NotNull JsonObject messageJson = messageElement.getAsJsonObject();
                 @NotNull JsonObject contentJson = messageJson.getAsJsonObject("content");
 
-                @NotNull StringMessage message = new StringMessage(storage, messageId);
+                @NotNull StringMessage message = new StringMessage(storage, id);
 
-                for(Map.Entry<String, JsonElement> entrySet : contentJson.entrySet()) {
-                    message.addContent(LocaleUtils.toLocale(entrySet.getKey()), entrySet.getValue().getAsString());
-                }
+                contentJson.asMap().forEach((locale, content) -> {
+
+                    if(content.isJsonArray()) {
+                        @NotNull List<String> arrayContents = new LinkedList<>();
+
+                        for(JsonElement contentElement : (JsonArray) content) {
+                            arrayContents.add(contentElement.getAsString());
+                        }
+
+                        message.addArrayContent(MessageUtils.deserializeLocale(locale), arrayContents);
+
+                    } else {
+                        message.addContent(MessageUtils.deserializeLocale(locale), content.getAsString());
+                    }
+                });
 
                 storage.getMessages().add(message);
-            }
+            });
 
             storage.load();
             return storage;
