@@ -10,15 +10,11 @@ public interface Message<M, L> {
 
     @NotNull Storage<M, L> getStorage();
 
-    @NotNull M getText(@NotNull L locale);
+    @NotNull M getText(@NotNull L locale, @NotNull Object @NotNull [] replaces);
+
+    @NotNull List<M> getArrayText(L locale, @NotNull Object @NotNull [] replaces);
 
     boolean isArrayText(@NotNull L locale);
-
-    @NotNull List<M> getArrayText(@NotNull L locale);
-
-    @NotNull M replace(@NotNull L locale, @NotNull Object @NotNull [] replaces);
-
-    @NotNull List<M> replaceArray(@NotNull L locale, @NotNull Object @NotNull [] replaces);
 
     void addArrayContent(@NotNull L locale, @NotNull List<M> content);
 

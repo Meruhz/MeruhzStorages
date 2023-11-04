@@ -45,43 +45,8 @@ public abstract class AbstractMessage<M, L> implements Message<M, L> {
     }
 
     @Override
-    public @NotNull M getText(@NotNull L locale) {
-        try {
-            return this.getContents().get(locale);
-
-        } catch (NullPointerException ex) {
-            try {
-                return this.getContents().get(this.getStorage().getDefaultLocale());
-
-            } catch (NullPointerException e) {
-                throw new RuntimeException("Could not find the specified locale '" + locale + "' and the default locale '" + this.getStorage().getDefaultLocale() + "' for message '" + this.getId() + "' at storage '" + this.getStorage().getName() + "'");
-            }
-        }
-    }
-
-    @Override
     public boolean isArrayText(@NotNull L locale) {
         return this.getArrayContents().containsKey(locale);
-    }
-
-    @Override
-    public @NotNull List<M> getArrayText(@NotNull L locale) {
-        if(!this.isArrayText(locale)) {
-            throw new IllegalStateException("Message '" + this.getId() + "' from locale '" + locale + "' is not an array text");
-        }
-
-        try {
-            return this.getArrayContents().get(locale);
-
-        } catch (NullPointerException ex) {
-
-            try {
-                return this.getArrayContents().get(this.getStorage().getDefaultLocale());
-
-            } catch (NullPointerException e) {
-                throw new RuntimeException("Could not find the specified locale '" + locale + "' and the default locale '" + this.getStorage().getDefaultLocale() + "' for message '" + this.getId() + "' at storage '" + this.getStorage().getName() + "'");
-            }
-        }
     }
 
     @Override

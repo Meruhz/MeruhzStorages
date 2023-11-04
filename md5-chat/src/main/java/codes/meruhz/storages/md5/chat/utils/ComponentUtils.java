@@ -16,11 +16,13 @@ public final class ComponentUtils {
     }
 
     public static @NotNull String serialize(@NotNull BaseComponent component) {
-        if (component instanceof TextComponent) {
-            TextComponent text = (TextComponent)component;
-            if (!text.hasFormatting() && (text.getExtra() == null || text.getExtra().isEmpty())) {
-                JsonObject object = new JsonObject();
+        if(component instanceof TextComponent) {
+            @NotNull TextComponent text = (TextComponent) component;
+
+            if(!text.hasFormatting() && (text.getExtra() == null || text.getExtra().isEmpty())) {
+                @NotNull JsonObject object = new JsonObject();
                 object.addProperty("text", text.getText());
+
                 return object.toString();
             }
         }
@@ -29,18 +31,21 @@ public final class ComponentUtils {
     }
 
     public static @NotNull String serialize(BaseComponent... components) {
-        if (components.length == 0) {
+        if(components.length == 0) {
             throw new JsonParseException("Empty array of base components");
+
         } else if (components.length == 1) {
-            return serialize(components[0]);
+            return ComponentUtils.serialize(components[0]);
+
         } else {
-            JsonArray array = new JsonArray();
+            @NotNull JsonArray array = new JsonArray();
 
             for(BaseComponent component : components) {
-                String serialized = serialize(component);
+                @NotNull String serialized = ComponentUtils.serialize(component);
 
                 try {
                     array.add(JsonParser.parseString(serialized));
+
                 } catch (JsonSyntaxException var8) {
                     array.add(serialized);
                 }

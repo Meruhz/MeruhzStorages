@@ -3,7 +3,6 @@ package codes.meruhz.storages.core.data.impl;
 import codes.meruhz.storages.core.StoragesCore;
 import codes.meruhz.storages.core.data.Message;
 import codes.meruhz.storages.core.data.Storage;
-import codes.meruhz.storages.core.utils.Loader;
 import codes.meruhz.storages.core.utils.configuration.AbstractConfiguration;
 import codes.meruhz.storages.core.utils.configuration.JsonConfiguration;
 import com.google.gson.JsonParser;
@@ -13,17 +12,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-public abstract class AbstractStorage<M, L> extends Loader implements Storage<M, L> {
+public abstract class AbstractStorage<M, L> implements Storage<M, L> {
 
     private final @NotNull String name;
     private final @NotNull L defaultLocale;
@@ -34,7 +29,7 @@ public abstract class AbstractStorage<M, L> extends Loader implements Storage<M,
         this.name = name;
         this.defaultLocale = defaultLocale;
         this.messages = new LinkedHashSet<>();
-        this.jsonContent = new JsonConfiguration(StoragesCore.getCore().getStoragesDirectory(), name);
+        this.jsonContent = new JsonConfiguration(StoragesCore.getSource(), name);
     }
 
     public @NotNull JsonConfiguration getJsonContent() {
@@ -70,7 +65,7 @@ public abstract class AbstractStorage<M, L> extends Loader implements Storage<M,
             throw new NullPointerException("Could not be found the locale '" + locale + "' from message '" + id + "' at storage '" + this.getName() + "'");
         }
 
-        return message.replace(locale, replaces);
+        return message.getText(locale, replaces);
     }
 
     @Override
@@ -87,34 +82,25 @@ public abstract class AbstractStorage<M, L> extends Loader implements Storage<M,
             throw new NullPointerException("Could not be found the locale '" + locale + "' from message '" + id + "' at storage '" + this.getName() + "'");
         }
 
-        return message.replaceArray(locale, replaces);
+        return message.getArrayText(locale, replaces);
     }
 
-    @Override
-    protected @NotNull CompletableFuture<Void> start() {
-        @NotNull CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+    public void load() {
+        @NotNull File directory = StoragesCore.getSource();
 
-        CompletableFuture.runAsync(() -> {
-            @NotNull File directory = StoragesCore.getCore().getStoragesDirectory();
+        if(!directory.isDirectory() && !directory.mkdirs()) {
+            throw new RuntimeException("Directory '" + directory.getAbsolutePath() + "' could not be created");
+        }
 
-            if(!directory.isDirectory() && !directory.mkdirs()) {
-                throw new RuntimeException("Directory '" + directory.getAbsolutePath() + "' could not be created");
+        try (@NotNull Stream<Path> stream = Files.list(directory.toPath()).filter(path -> path.getFileName().toString().equals(this.getJsonContent().getName()))) {
+            @NotNull Optional<Path> optionalPath = stream.findFirst();
+
+            if(optionalPath.isPresent() && Files.exists(optionalPath.get())) {
+                this.getJsonContent().setConfiguration(JsonParser.parseString(AbstractConfiguration.getFileContent(optionalPath.get().toFile())), true);
             }
 
-            try (@NotNull Stream<Path> stream = Files.list(directory.toPath()).filter(path -> path.getFileName().toString().equals(this.getJsonContent().getName()))) {
-                @NotNull Optional<Path> optionalPath = stream.findFirst();
-
-                if(optionalPath.isPresent() && Files.exists(optionalPath.get())) {
-                    this.getJsonContent().setConfiguration(JsonParser.parseString(AbstractConfiguration.getFileContent(optionalPath.get().toFile())), true);
-                }
-
-                completableFuture.complete(null);
-
-            } catch (IOException e) {
-                completableFuture.completeExceptionally(e);
-            }
-        });
-
-        return completableFuture.orTimeout(Duration.of(20, ChronoUnit.SECONDS).toMillis(), TimeUnit.MILLISECONDS);
+        } catch (IOException e) {
+            throw new RuntimeException("An error occurred while loading storage from folder '" + directory.getAbsolutePath() + "'");
+        }
     }
 }

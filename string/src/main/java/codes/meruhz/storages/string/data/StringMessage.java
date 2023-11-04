@@ -15,12 +15,36 @@ public class StringMessage extends AbstractMessage<String, Locale> {
     }
 
     @Override
-    public @NotNull String replace(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
-        return MessageUtils.replace(super.getText(locale), replaces);
+    public @NotNull String getText(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
+        try {
+            return MessageUtils.replace(super.getContents().get(locale), replaces);
+
+        } catch (NullPointerException ex) {
+            try {
+                return MessageUtils.replace(super.getContents().get(super.getStorage().getDefaultLocale()), replaces);
+
+            } catch (NullPointerException e) {
+                throw new RuntimeException("Could not find the specified locale '" + locale + "' and the default locale '" + super.getStorage().getDefaultLocale() + "' for message '" + super.getId() + "' at storage '" + super.getStorage().getName() + "'");
+            }
+        }
     }
 
     @Override
-    public @NotNull List<String> replaceArray(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
-        return super.getArrayText(locale).stream().map(text -> MessageUtils.replace(text, replaces)).collect(Collectors.toList());
+    public @NotNull List<@NotNull String> getArrayText(Locale locale, @NotNull Object @NotNull [] replaces) {
+        if(!this.isArrayText(locale)) {
+            throw new IllegalStateException("Message '" + super.getId() + "' from locale '" + locale + "' is not an array text");
+
+        } else try {
+            return super.getArrayContents().get(locale).stream().map(text -> MessageUtils.replace(text, replaces)).collect(Collectors.toList());
+
+        } catch (NullPointerException ex) {
+
+            try {
+                return super.getArrayContents().get(super.getStorage().getDefaultLocale()).stream().map(text -> MessageUtils.replace(text, replaces)).collect(Collectors.toList());
+
+            } catch (NullPointerException e) {
+                throw new RuntimeException("Could not find the specified locale '" + locale + "' and the default locale '" + super.getStorage().getDefaultLocale() + "' for message '" + super.getId() + "' at storage '" + super.getStorage().getName() + "'");
+            }
+        }
     }
 }

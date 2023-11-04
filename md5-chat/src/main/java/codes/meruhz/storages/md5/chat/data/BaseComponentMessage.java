@@ -16,20 +16,44 @@ public class BaseComponentMessage extends AbstractMessage<BaseComponent[], Local
     }
 
     @Override
-    public @NotNull BaseComponent @NotNull [] replace(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
-        return ComponentUtils.replace(super.getText(locale), replaces);
+    public @NotNull BaseComponent @NotNull [] getText(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
+        try {
+            return ComponentUtils.replace(super.getContents().get(locale), replaces);
+
+        } catch (NullPointerException ex) {
+            try {
+                return ComponentUtils.replace(super.getContents().get(super.getStorage().getDefaultLocale()), replaces);
+
+            } catch (NullPointerException e) {
+                throw new RuntimeException("Could not find the specified locale '" + locale + "' and the default locale '" + super.getStorage().getDefaultLocale() + "' for message '" + super.getId() + "' at storage '" + super.getStorage().getName() + "'");
+            }
+        }
     }
 
     @Override
-    public @NotNull List<@NotNull BaseComponent @NotNull []> replaceArray(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
-        return super.getArrayText(locale).stream().map(text -> ComponentUtils.replace(text, replaces)).collect(Collectors.toList());
+    public @NotNull List<@NotNull BaseComponent @NotNull []> getArrayText(Locale locale, @NotNull Object @NotNull [] replaces) {
+        if(!this.isArrayText(locale)) {
+            throw new IllegalStateException("Message '" + super.getId() + "' from locale '" + locale + "' is not an array text");
+
+        } else try {
+            return super.getArrayContents().get(locale).stream().map(text -> ComponentUtils.replace(text, replaces)).collect(Collectors.toList());
+
+        } catch (NullPointerException ex) {
+
+            try {
+                return super.getArrayContents().get(super.getStorage().getDefaultLocale()).stream().map(text -> ComponentUtils.replace(text, replaces)).collect(Collectors.toList());
+
+            } catch (NullPointerException e) {
+                throw new RuntimeException("Could not find the specified locale '" + locale + "' and the default locale '" + super.getStorage().getDefaultLocale() + "' for message '" + super.getId() + "' at storage '" + super.getStorage().getName() + "'");
+            }
+        }
     }
 
     public @NotNull String getLegacyText(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
-        return ComponentUtils.getText(this.replace(locale, replaces));
+        return ComponentUtils.getText(this.getText(locale, replaces));
     }
 
     public @NotNull List<String> getLegacyArray(@NotNull Locale locale, @NotNull Object @NotNull [] replaces) {
-        return ComponentUtils.getArrayText(this.replaceArray(locale, replaces));
+        return ComponentUtils.getArrayText(this.getArrayText(locale, replaces));
     }
 }
