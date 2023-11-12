@@ -1,44 +1,47 @@
-package codes.meruhz.storages.string.serializer;
+package codes.meruhz.storages.component.serializer;
 
 import codes.laivy.mlanguage.lang.Locale;
 import codes.meruhz.storages.api.data.Content;
 import codes.meruhz.storages.api.data.Message;
 import codes.meruhz.storages.api.serializer.StorageSerializer;
-import codes.meruhz.storages.string.data.StringContent;
-import codes.meruhz.storages.string.data.StringMessage;
-import codes.meruhz.storages.string.data.StringStorage;
+import codes.meruhz.storages.component.data.ComponentContent;
+import codes.meruhz.storages.component.data.ComponentMessage;
+import codes.meruhz.storages.component.data.ComponentStorage;
+import codes.meruhz.storages.component.utils.ComponentUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class StringStorageSerializer implements StorageSerializer<StringStorage> {
+public class ComponentStorageSerializer implements StorageSerializer<ComponentStorage> {
 
     @Override
-    public @NotNull JsonElement serialize(@NotNull StringStorage storage) {
+    public @NotNull JsonElement serialize(@NotNull ComponentStorage storage) {
         @NotNull JsonObject json = new JsonObject();
         json.addProperty("name", storage.getName());
         json.addProperty("default locale", storage.getDefaultLocale().toString());
 
         @NotNull JsonObject messagesJson = new JsonObject();
-        for(Message<String> message : storage.getMessages()) {
+        for(Message<BaseComponent[]> message : storage.getMessages()) {
             @NotNull JsonObject messageJson = new JsonObject();
             @NotNull JsonObject contentJson = new JsonObject();
 
-            for(Content<String> content : message.getContents()) {
-                @NotNull StringContent stringContent = (StringContent) content;
+            for(Content<BaseComponent[]> content : message.getContents()) {
+                @NotNull ComponentContent componentContent = (ComponentContent) content;
 
-                if(!stringContent.isArrayText()) {
-                    contentJson.addProperty(content.getLocale().toString(), content.getText());
+                if(!componentContent.isArrayText()) {
+                    contentJson.addProperty(componentContent.getLocale().toString(), ComponentUtils.getText(componentContent.getText()));
 
                 } else {
                     @NotNull JsonArray contentArray = new JsonArray();
 
-                    stringContent.getAsArrayText().forEach(contentArray::add);
-                    contentJson.add(content.getLocale().toString(), contentArray);
+                    ComponentUtils.getArrayText(componentContent.getAsArrayText()).forEach(contentArray::add);
+                    contentJson.add(componentContent.getLocale().toString(), contentArray);
                 }
             }
 
@@ -51,7 +54,7 @@ public class StringStorageSerializer implements StorageSerializer<StringStorage>
     }
 
     @Override
-    public @NotNull StringStorage deserialize(@NotNull JsonElement element) {
+    public @NotNull ComponentStorage deserialize(@NotNull JsonElement element) {
         try {
             @NotNull JsonObject json = element.getAsJsonObject();
 
@@ -59,27 +62,27 @@ public class StringStorageSerializer implements StorageSerializer<StringStorage>
             @NotNull Locale defaultLocale = Locale.valueOf(json.get("default locale").getAsString());
 
             @NotNull JsonObject messagesJson = json.getAsJsonObject("messages");
-            @NotNull StringStorage storage = new StringStorage(name, defaultLocale);
+            @NotNull ComponentStorage storage = new ComponentStorage(name, defaultLocale);
 
             messagesJson.asMap().forEach((id, messageElement) -> {
                 @NotNull JsonObject messageJson = messageElement.getAsJsonObject();
                 @NotNull JsonObject contentJson = messageJson.getAsJsonObject("content");
 
-                @NotNull StringMessage message = new StringMessage(storage, id);
+                @NotNull ComponentMessage message = new ComponentMessage(storage, id);
 
                 contentJson.asMap().forEach((locale, content) -> {
 
                     if(content.isJsonArray()) {
-                        @NotNull List<String> arrayText = new LinkedList<>();
+                        @NotNull List<BaseComponent[]> arrayText = new LinkedList<>();
 
                         for(JsonElement contentElement : (JsonArray) content) {
-                            arrayText.add(contentElement.getAsString());
+                            arrayText.add(new BaseComponent[] {new TextComponent(ComponentUtils.getText(new TextComponent(contentElement.getAsString())))});
                         }
 
-                        message.addContent(new StringContent(message, Locale.valueOf(locale), arrayText));
+                        message.addContent(new ComponentContent(message, Locale.valueOf(locale), arrayText));
 
                     } else {
-                        message.addContent(new StringContent(message, Locale.valueOf(locale), content.getAsString()));
+                        message.addContent(new ComponentContent(message, Locale.valueOf(locale), new BaseComponent[] {new TextComponent(ComponentUtils.getText(new TextComponent(content.getAsString())))}));
                     }
                 });
 

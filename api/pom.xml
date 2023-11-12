@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>codes.meruhz.storages</groupId>
-    <artifactId>string</artifactId>
+    <artifactId>api</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -20,11 +20,11 @@
     </properties>
 
     <dependencies>
-        <!-- MeruhzStorages API -->
+        <!-- Gson API -->
         <dependency>
-            <groupId>codes.meruhz.storages</groupId>
-            <artifactId>api</artifactId>
-            <version>1.0</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

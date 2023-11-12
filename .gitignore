@@ -37,8 +37,3 @@ build/
 ### Mac OS ###
 .DS_Store
 /.idea/
-/src/test/
-/src/main/resources/storage_model.json
-/Legacy/src/test/
-/BaseComponent/src/test/
-/md5-chat/src/test/

@@ -1,34 +1,45 @@
-package codes.meruhz.storages.string.data;
+package codes.meruhz.storages.component.data;
 
 import codes.laivy.mlanguage.lang.Locale;
 import codes.meruhz.storages.api.MeruhzStorages;
 import codes.meruhz.storages.api.data.Message;
 import codes.meruhz.storages.api.data.impl.AbstractStorage;
 import codes.meruhz.storages.api.utils.configuration.AbstractConfiguration;
-import codes.meruhz.storages.string.serializer.StringStorageSerializer;
+import codes.meruhz.storages.component.serializer.ComponentStorageSerializer;
+import codes.meruhz.storages.component.utils.ComponentUtils;
 import com.google.gson.JsonParser;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class StringStorage extends AbstractStorage<String> {
+public class ComponentStorage extends AbstractStorage<BaseComponent[]> {
 
-    public StringStorage(@NotNull String name, @NotNull Locale defaultLocale) {
+    public ComponentStorage(@NotNull String name, @NotNull Locale defaultLocale) {
         super(name, defaultLocale);
     }
 
-    public StringStorage(@NotNull String name, @NotNull Locale defaultLocale, @NotNull Set<@NotNull Message<String>> messages) {
+    public ComponentStorage(@NotNull String name, @NotNull Locale defaultLocale, @NotNull Set<@NotNull Message<BaseComponent[]>> messages) {
         super(name, defaultLocale, messages);
     }
 
-    public StringStorage(@NotNull File source, @NotNull String name, @NotNull Locale defaultLocale, @NotNull Set<@NotNull Message<String>> messages) {
+    public ComponentStorage(@NotNull File source, @NotNull String name, @NotNull Locale defaultLocale, @NotNull Set<@NotNull Message<BaseComponent @NotNull[]>> messages) {
         super(source, name, defaultLocale, messages);
+    }
+
+    public @NotNull String getLegacyText(@NotNull Locale locale, @NotNull String id, @NotNull Object... replaces) {
+        return ComponentUtils.getText(super.getText(locale, id, replaces));
+    }
+
+    public @NotNull List<@NotNull String> getLegacyArray(@NotNull Locale locale, @NotNull String id, @NotNull Object... replaces) {
+        return ComponentUtils.getArrayText(super.getArrayText(locale, id, replaces));
     }
 
     @Override
@@ -39,7 +50,7 @@ public class StringStorage extends AbstractStorage<String> {
                 @NotNull Optional<Path> optionalPath = stream.findFirst();
 
                 if(optionalPath.isPresent() && Files.exists(optionalPath.get())) {
-                    MeruhzStorages.getInstance().getStorages().add(new StringStorageSerializer().deserialize(JsonParser.parseString(AbstractConfiguration.getFileContent(optionalPath.get().toFile()))));
+                    MeruhzStorages.getInstance().getStorages().add(new ComponentStorageSerializer().deserialize(JsonParser.parseString(AbstractConfiguration.getFileContent(optionalPath.get().toFile()))));
                 }
 
             } catch (IOException e) {
@@ -56,7 +67,7 @@ public class StringStorage extends AbstractStorage<String> {
             throw new RuntimeException("Storage '" + source.getName() + "' could not be created at source '" + this.getSource().getAbsolutePath() + "'");
         }
 
-        super.getJsonContent().setContent(new StringStorageSerializer().serialize(this), true);
+        super.getJsonContent().setContent(new ComponentStorageSerializer().serialize(this), true);
         MeruhzStorages.getInstance().getStorages().remove(this);
     }
 }
