@@ -1,11 +1,11 @@
-package codes.meruhz.storages.api.data;
+package codes.meruhz.langstor.api;
 
-import codes.laivy.mlanguage.lang.Locale;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Locale;
 
-public interface Content<T> {
+public interface MessageContent<T> {
 
     @NotNull Message<@NotNull T> getMessage();
 
@@ -13,9 +13,11 @@ public interface Content<T> {
 
     @NotNull T getText();
 
-    boolean isArrayText();
-
     @NotNull T replace(Object @NotNull [] replaces);
 
+    @NotNull List<@NotNull T> replaceArray(Object @NotNull [] replaces);
+
     @NotNull List<@NotNull T> getAsArrayText();
+
+    boolean isArrayText();
 }
