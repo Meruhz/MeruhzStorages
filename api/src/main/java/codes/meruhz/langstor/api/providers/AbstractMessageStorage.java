@@ -15,14 +15,14 @@ public abstract class AbstractMessageStorage<T> implements MessageStorage<T> {
 
     private final @NotNull String name;
     private final @NotNull Locale defaultLocale;
-    private final @NotNull Set<Message<T>> messages;
+    private final @NotNull Set<@NotNull Message<T>> messages;
     private final @NotNull JsonElementConfiguration jsonModel;
 
     public AbstractMessageStorage(@NotNull String name, @NotNull Locale defaultLocale) {
         this(name, defaultLocale, new LinkedHashSet<>());
     }
 
-    public AbstractMessageStorage(@NotNull String name, @NotNull Locale defaultLocale, @NotNull Set<Message<T>> messages) {
+    public AbstractMessageStorage(@NotNull String name, @NotNull Locale defaultLocale, @NotNull Set<@NotNull Message<T>> messages) {
         this.name = name;
         this.defaultLocale = defaultLocale;
         this.messages = messages;

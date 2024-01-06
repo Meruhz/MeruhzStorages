@@ -11,7 +11,7 @@ public interface MessageUtils<T> {
 
     @NotNull Locale stringToLocale(@NotNull String string);
 
-    @NotNull T replaceText(@NotNull String text, Object @NotNull [] replaces);
+    @NotNull T replaceText(@NotNull T text, Object @NotNull [] replaces);
 
     @NotNull List<@NotNull T> replaceArray(@NotNull List<@NotNull T> arrayText, Object @NotNull [] replaces);
 }

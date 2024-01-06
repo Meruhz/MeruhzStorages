@@ -7,18 +7,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 public abstract class AbstractMessage<T> implements Message<T> {
 
     private final @NotNull String id;
     private final @NotNull MessageStorage<T> storage;
-    private final @NotNull Collection<@NotNull MessageContent<T>> contents;
+    private final @NotNull Set<@NotNull MessageContent<T>> contents;
 
     public AbstractMessage(@NotNull String id, @NotNull MessageStorage<T> storage) {
         this(id, storage, new LinkedHashSet<>());
     }
 
-    public AbstractMessage(@NotNull String id, @NotNull MessageStorage<T> storage, @NotNull Collection<@NotNull MessageContent<T>> contents) {
+    public AbstractMessage(@NotNull String id, @NotNull MessageStorage<T> storage, @NotNull Set<@NotNull MessageContent<T>> contents) {
         this.id = id;
         this.storage = storage;
         this.contents = contents;

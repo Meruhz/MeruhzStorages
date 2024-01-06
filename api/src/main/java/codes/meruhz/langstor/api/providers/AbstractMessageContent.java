@@ -22,6 +22,7 @@ public abstract class AbstractMessageContent<T> implements MessageContent<T> {
         this.locale = locale;
         this.text = text;
         this.arrayText = null;
+        this.getMessage().addContent(this);
     }
 
     public AbstractMessageContent(@NotNull Message<@NotNull T> message, @NotNull Locale locale, @NotNull List<@NotNull T> arrayText) {
@@ -29,8 +30,8 @@ public abstract class AbstractMessageContent<T> implements MessageContent<T> {
         this.locale = locale;
         this.text = null;
         this.arrayText = arrayText;
+        this.getMessage().addContent(this);
     }
-
 
     @Override
     public @NotNull Message<@NotNull T> getMessage() {
