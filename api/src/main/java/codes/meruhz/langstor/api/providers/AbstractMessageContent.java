@@ -1,15 +1,15 @@
-package codes.meruhz.storages.api.data.impl;
+package codes.meruhz.langstor.api.providers;
 
-import codes.laivy.mlanguage.lang.Locale;
-import codes.meruhz.storages.api.data.Content;
-import codes.meruhz.storages.api.data.Message;
+import codes.meruhz.langstor.api.Message;
+import codes.meruhz.langstor.api.MessageContent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
-public abstract class AbstractContent<T> implements Content<T> {
+public abstract class AbstractMessageContent<T> implements MessageContent<T> {
 
     private final @NotNull Message<@NotNull T> message;
     private final @NotNull Locale locale;
@@ -17,23 +17,20 @@ public abstract class AbstractContent<T> implements Content<T> {
     private final @Nullable T text;
     private final @Nullable List<@NotNull T> arrayText;
 
-    private final boolean array;
-
-    public AbstractContent(@NotNull Message<@NotNull T> message, @NotNull Locale locale, @NotNull T text) {
+    public AbstractMessageContent(@NotNull Message<@NotNull T> message, @NotNull Locale locale, @NotNull T text) {
         this.message = message;
         this.locale = locale;
         this.text = text;
         this.arrayText = null;
-        this.array = false;
     }
 
-    public AbstractContent(@NotNull Message<@NotNull T> message, @NotNull Locale locale, @NotNull List<@NotNull T> arrayText) {
+    public AbstractMessageContent(@NotNull Message<@NotNull T> message, @NotNull Locale locale, @NotNull List<@NotNull T> arrayText) {
         this.message = message;
         this.locale = locale;
         this.text = null;
         this.arrayText = arrayText;
-        this.array = true;
     }
+
 
     @Override
     public @NotNull Message<@NotNull T> getMessage() {
@@ -47,17 +44,17 @@ public abstract class AbstractContent<T> implements Content<T> {
 
     @Override
     public @NotNull T getText() {
-        return Optional.ofNullable(this.text).orElseThrow(() -> new NullPointerException("Locale '" + this.getLocale() + "' for message '" + this.getMessage().getId() + "' is not an normal text"));
-    }
-
-    @Override
-    public boolean isArrayText() {
-        return this.array && this.arrayText != null;
+        return Optional.ofNullable(this.text).orElseThrow(() -> new NullPointerException("Invalid text"));
     }
 
     @Override
     public @NotNull List<@NotNull T> getAsArrayText() {
-        return Optional.ofNullable(this.arrayText).orElseThrow(() -> new NullPointerException("Locale '" + this.getLocale() + "' for message '" + this.getMessage().getId() + "' is not an array text"));
+        return Optional.ofNullable(this.arrayText).orElseThrow(() -> new NullPointerException("Invalid array text"));
+    }
+
+    @Override
+    public boolean isArrayText() {
+        return this.text == null && this.arrayText != null;
     }
 
     @Override
@@ -65,10 +62,10 @@ public abstract class AbstractContent<T> implements Content<T> {
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
 
-        AbstractContent<?> that = (AbstractContent<?>) o;
+        AbstractMessageContent<?> that = (AbstractMessageContent<?>) o;
 
         if(!message.equals(that.message)) return false;
-        return locale == that.locale;
+        return locale.equals(that.locale);
     }
 
     @Override
