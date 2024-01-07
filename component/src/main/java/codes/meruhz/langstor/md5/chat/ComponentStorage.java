@@ -21,18 +21,18 @@ public class ComponentStorage extends AbstractMessageStorage<BaseComponent[]> {
     }
 
     public @NotNull String getLegacyText(@NotNull Locale locale, @NotNull String id, @NotNull Object... replaces) {
-        return ((ComponentUtils) LanguageStorage.langstor().getMessageUtils()).getLegacyText(super.getMessage(id).getText(locale, replaces));
+        return ((ComponentUtils) LanguageStorage.getMessageUtils()).getLegacyText(super.getMessage(id).getText(locale, replaces));
     }
 
     public @NotNull String getLegacyText(@NotNull String id, @NotNull Object... replaces) {
-        return ((ComponentUtils) LanguageStorage.langstor().getMessageUtils()).getLegacyText(super.getMessage(id).getText(replaces));
+        return ((ComponentUtils) LanguageStorage.getMessageUtils()).getLegacyText(super.getMessage(id).getText(replaces));
     }
 
     public @NotNull List<@NotNull String> getLegacyArray(@NotNull String id, @NotNull Locale locale, @NotNull Object... replaces) {
-        return ((ComponentUtils) LanguageStorage.langstor().getMessageUtils()).getLegacyArray(super.getMessage(id).getArrayText(locale, replaces));
+        return ((ComponentUtils) LanguageStorage.getMessageUtils()).getLegacyArray(super.getMessage(id).getArrayText(locale, replaces));
     }
 
     public @NotNull List<@NotNull String> getLegacyArray(@NotNull String id, @NotNull Object... replaces) {
-        return ((ComponentUtils) LanguageStorage.langstor().getMessageUtils()).getLegacyArray(super.getMessage(id).getArrayText(replaces));
+        return ((ComponentUtils) LanguageStorage.getMessageUtils()).getLegacyArray(super.getMessage(id).getArrayText(replaces));
     }
 }

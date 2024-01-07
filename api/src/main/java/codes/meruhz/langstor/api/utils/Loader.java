@@ -35,7 +35,7 @@ public abstract class Loader {
                     throw new NullPointerException("Task '" + this.getId() + "' already is started");
                 }
 
-                this.start();
+                this.start().join();
                 this.loaded = true;
                 completableFuture.complete(null);
 
@@ -58,7 +58,7 @@ public abstract class Loader {
                     throw new NullPointerException("Task '" + this.getId() + "' already is not started");
                 }
 
-                this.stop();
+                this.stop().join();
                 this.loaded = false;
                 completableFuture.complete(null);
 
@@ -67,14 +67,14 @@ public abstract class Loader {
             }
         });
 
-        return completableFuture.orTimeout(5, TimeUnit.SECONDS);
+        return completableFuture.orTimeout(10, TimeUnit.SECONDS);
     }
 
     @ApiStatus.OverrideOnly
-    protected abstract void start();
+    protected abstract @NotNull CompletableFuture<Void> start();
 
     @ApiStatus.OverrideOnly
-    protected abstract void stop();
+    protected abstract @NotNull CompletableFuture<Void> stop();
 
     @Override
     public boolean equals(Object o) {

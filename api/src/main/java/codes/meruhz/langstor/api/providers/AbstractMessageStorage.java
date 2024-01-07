@@ -26,8 +26,8 @@ public abstract class AbstractMessageStorage<T> implements MessageStorage<T> {
         this.name = name;
         this.defaultLocale = defaultLocale;
         this.messages = messages;
-        this.jsonModel = new JsonElementConfiguration(LanguageStorage.langstor().getStorageFolder(), this.getName());
-        LanguageStorage.langstor().getLanguageApi().getStorages().add(this);
+        this.jsonModel = new JsonElementConfiguration(LanguageStorage.getStorageFolder(), this.getName());
+        LanguageStorage.getLanguageApi().getStorages().add(this);
     }
 
     @Override

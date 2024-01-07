@@ -18,7 +18,7 @@ import java.util.Locale;
 
 public class ComponentLanguageApi extends AbstractLanguageApi {
 
-    private static final @NotNull ComponentUtils COMPONENT_UTILS = ((ComponentUtils) LanguageStorage.langstor().getMessageUtils());
+    private static final @NotNull ComponentUtils COMPONENT_UTILS = ((ComponentUtils) LanguageStorage.getMessageUtils());
 
     @Override
     public @NotNull JsonElement serialize(@NotNull MessageStorage<?> messageStorage) {

@@ -21,18 +21,18 @@ public class ComponentMessage extends AbstractMessage<BaseComponent[]> {
     }
 
     public @NotNull String getLegacyText(@NotNull Locale locale, Object @NotNull [] replaces) {
-        return ((ComponentUtils) LanguageStorage.langstor().getMessageUtils()).getLegacyText(super.getText(locale, replaces));
+        return ((ComponentUtils) LanguageStorage.getMessageUtils()).getLegacyText(super.getText(locale, replaces));
     }
 
     public @NotNull String getLegacyText(Object @NotNull [] replaces) {
-        return ((ComponentUtils) LanguageStorage.langstor().getMessageUtils()).getLegacyText(super.getText(replaces));
+        return ((ComponentUtils) LanguageStorage.getMessageUtils()).getLegacyText(super.getText(replaces));
     }
 
     public @NotNull List<@NotNull String> getLegacyArray(@NotNull Locale locale, Object @NotNull [] replaces) {
-        return ((ComponentUtils) LanguageStorage.langstor().getMessageUtils()).getLegacyArray(super.getArrayText(locale, replaces));
+        return ((ComponentUtils) LanguageStorage.getMessageUtils()).getLegacyArray(super.getArrayText(locale, replaces));
     }
 
     public @NotNull List<@NotNull String> getLegacyArray(Object @NotNull [] replaces) {
-        return ((ComponentUtils) LanguageStorage.langstor().getMessageUtils()).getLegacyArray(super.getArrayText(replaces));
+        return ((ComponentUtils) LanguageStorage.getMessageUtils()).getLegacyArray(super.getArrayText(replaces));
     }
 }

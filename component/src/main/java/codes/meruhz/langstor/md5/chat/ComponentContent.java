@@ -20,11 +20,11 @@ public class ComponentContent extends AbstractMessageContent<BaseComponent[]> {
 
     @Override
     public BaseComponent @NotNull [] replace(Object @NotNull [] replaces) {
-        return ((ComponentUtils) LanguageStorage.langstor().getMessageUtils()).replaceText(super.getText(), replaces);
+        return ((ComponentUtils) LanguageStorage.getMessageUtils()).replaceText(super.getText(), replaces);
     }
 
     @Override
     public @NotNull List<BaseComponent @NotNull []> replaceArray(Object @NotNull [] replaces) {
-        return ((ComponentUtils) LanguageStorage.langstor().getMessageUtils()).replaceArray(super.getAsArrayText(), replaces);
+        return ((ComponentUtils) LanguageStorage.getMessageUtils()).replaceArray(super.getAsArrayText(), replaces);
     }
 }
