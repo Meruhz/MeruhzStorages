@@ -9,41 +9,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class ComponentUtils implements MessageUtils<BaseComponent[]> {
-
-    @Override
-    public @NotNull String localeToString(@NotNull Locale locale) {
-        @NotNull String language = locale.getLanguage().toUpperCase();
-        @NotNull String country = locale.getCountry().toUpperCase();
-
-        if(language.isEmpty() || country.isEmpty()) {
-            throw new NullPointerException("Locale must have language and a country");
-        }
-
-        return language + "_" + country;
-    }
-
-    @Override
-    public @NotNull Locale stringToLocale(@NotNull String string) {
-        if(!string.contains("_")) {
-            throw new IllegalArgumentException("Invalid locale string");
-        }
-
-        String @NotNull [] parts = string.split("_");
-
-        if(parts.length != 2 || parts[0].isEmpty() || parts[1].isEmpty()) {
-            throw new IllegalArgumentException("Invalid locale string format");
-        }
-
-        @NotNull String language = parts[0].toLowerCase();
-        @NotNull String country = parts[1].toUpperCase();
-
-        return new Locale(language, country);
-    }
-
 
     @Override
     public BaseComponent @NotNull [] replaceText(BaseComponent @NotNull [] text, Object @NotNull [] replaces) {
