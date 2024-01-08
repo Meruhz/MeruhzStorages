@@ -14,10 +14,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This class represents a language API for managing message storages containing strings. It extends
+ * AbstractLanguageApi and provides methods for serializing and deserializing message storages.
+ *
+ * @see AbstractLanguageApi
+ */
 public class StringLanguageApi extends AbstractLanguageApi {
 
     private static final @NotNull StringUtils STRING_UTILS = ((StringUtils) LanguageStorage.getMessageUtils());
 
+    /**
+     * Serializes the provided message storage into a JSON element.
+     *
+     * @param messageStorage The message storage to be serialized.
+     * @return The JSON element representing the serialized message storage.
+     */
     @Override
     public @NotNull JsonElement serialize(@NotNull MessageStorage<?> messageStorage) {
         @NotNull JsonObject json = new JsonObject();
@@ -51,6 +63,13 @@ public class StringLanguageApi extends AbstractLanguageApi {
         return json;
     }
 
+    /**
+     * Deserializes the provided JSON element into a message storage.
+     *
+     * @param jsonElement The JSON element to be deserialized.
+     * @return The deserialized message storage.
+     * @throws RuntimeException If there is an error during deserialization.
+     */
     @Override
     public @NotNull MessageStorage<?> deserialize(@NotNull JsonElement jsonElement) {
         try {
@@ -92,6 +111,5 @@ public class StringLanguageApi extends AbstractLanguageApi {
         } catch (Throwable throwable) {
             throw new RuntimeException("Failed to deserialize storage: " + jsonElement);
         }
-
     }
 }
