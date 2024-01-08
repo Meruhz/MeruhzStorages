@@ -16,10 +16,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This class represents a language API for BungeeCord's BaseComponent[]. It extends AbstractLanguageApi
+ * and provides methods for serializing and deserializing a message storage containing components.
+ *
+ * @see AbstractLanguageApi
+ */
 public class ComponentLanguageApi extends AbstractLanguageApi {
 
     private static final @NotNull ComponentUtils COMPONENT_UTILS = ((ComponentUtils) LanguageStorage.getMessageUtils());
 
+    /**
+     * Serializes the provided message storage into a JsonElement.
+     *
+     * @param messageStorage The message storage to be serialized.
+     * @return The serialized message storage as a JsonElement.
+     */
     @Override
     public @NotNull JsonElement serialize(@NotNull MessageStorage<?> messageStorage) {
         @NotNull JsonObject json = new JsonObject();
@@ -53,6 +65,13 @@ public class ComponentLanguageApi extends AbstractLanguageApi {
         return json;
     }
 
+    /**
+     * Deserializes the provided JsonElement into a ComponentStorage.
+     *
+     * @param jsonElement The JsonElement to be deserialized.
+     * @return The deserialized ComponentStorage.
+     * @throws RuntimeException If deserialization fails.
+     */
     @Override
     public @NotNull ComponentStorage deserialize(@NotNull JsonElement jsonElement) {
         try {
@@ -76,13 +95,13 @@ public class ComponentLanguageApi extends AbstractLanguageApi {
                         @NotNull List<BaseComponent[]> arrayText = new LinkedList<>();
 
                         for(JsonElement contentElement : (JsonArray) content) {
-                            arrayText.add(new BaseComponent[] { new TextComponent(COMPONENT_UTILS.getLegacyText(new TextComponent(contentElement.getAsString())))});
+                            arrayText.add(new BaseComponent[]{new TextComponent(COMPONENT_UTILS.getLegacyText(new TextComponent(contentElement.getAsString())))});
                         }
 
                         message.addContent(new ComponentContent(message, COMPONENT_UTILS.stringToLocale(locale), arrayText));
 
                     } else {
-                        message.addContent(new ComponentContent(message, COMPONENT_UTILS.stringToLocale(locale), new BaseComponent[] {new TextComponent(COMPONENT_UTILS.getLegacyText(new TextComponent(content.getAsString())))}));
+                        message.addContent(new ComponentContent(message, COMPONENT_UTILS.stringToLocale(locale), new BaseComponent[]{new TextComponent(COMPONENT_UTILS.getLegacyText(new TextComponent(content.getAsString())))}));
                     }
                 });
 
